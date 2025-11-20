@@ -1,0 +1,245 @@
+.page, .next {
+  --gray-rgb: 0, 0, 0;
+  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
+  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+  --selection-rgb: 255, 0, 0;
+
+  --button-primary-hover: #383838;
+  --button-secondary-hover: #f2f2f2;
+
+  display: grid;
+  grid-template-columns: 18rem 1fr;
+  align-items: center;
+  justify-items: center;
+  min-height: 100svh;
+  padding: 2rem;
+  gap: 4rem;
+  font-family: var(--font-primary);
+  position: relative;
+}
+
+.page {
+  /* position: sticky; */
+  top: 0;
+  z-index: 1;
+}
+
+.next {
+  position: relative;
+  z-index: 2;
+}
+
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 18rem;
+  margin-right: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.ctaButton {
+  padding: 1rem 1.5rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  margin-top: 1rem;
+  color: var(--color-mono-primary);
+  border-radius: 0.25rem;
+  font-size: var(--type-small);
+  backdrop-filter: blur(0.625rem);
+  width: max-content;
+  font-weight: 400;
+}
+
+.aside > div:not(:has(h1)) {
+  margin-top: auto;
+}
+
+.aside h1 {
+  font-family: var(--font-secondary);
+  font-size: var(--type-h6);
+}
+
+.aside h2 span {
+  font-weight: 700;
+  font-size: 1.5rem;
+  font-family: var(--font-secondary);
+  text-transform: initial;
+  font-weight: 400;
+}
+
+.aside h2 {
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  font-size: 3.5rem;
+  line-height: 1;
+
+}
+
+.next {
+  padding: 2rem;
+  background: var(--color-mono-primary);
+  color: var(--color-mono-secondary);
+  font-family: var(--font-secondary);
+  min-height: 100svh;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  grid-column-start: 2;
+  width: 100%;
+  height: 100%;
+  padding-right: 4rem;
+}
+
+.next .main {
+  place-content:center;
+
+}
+
+.next h2 {
+  font-size: 1.25rem;
+}
+.main iframe {
+  width: 100%;
+  /* height: 100%; */
+  aspect-ratio: 16/9;
+}
+
+.main ol {
+  font-family: var(--font-primary);
+  padding-left: 0;
+  margin: 0;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  list-style-position: inside;
+}
+
+.main li:not(:last-of-type) {
+  margin-bottom: 8px;
+}
+
+.main code {
+  font-family: inherit;
+  background: var(--gray-alpha-100);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.ctas {
+  display: flex;
+  gap: var(--type-base);
+}
+
+.ctas a {
+  appearance: none;
+  border-radius: 128px;
+  height: 48px;
+  padding: 0 20px;
+  border: 1px solid transparent;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--type-small);
+  line-height: 20px;
+  font-weight: 500;
+}
+
+a.primary {
+  background: var(--foreground);
+  color: var(--background);
+  gap: 8px;
+}
+
+a.secondary {
+  border-color: var(--gray-alpha-200);
+  min-width: 18rem;
+}
+
+.footer {
+  grid-row-start: 3;
+  display: flex;
+  gap: 24px;
+}
+
+.footer a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer img {
+  flex-shrink: 0;
+}
+
+/* Enable hover only on non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+  a.primary:hover {
+    background: var(--button-primary-hover);
+    border-color: transparent;
+  }
+
+  a.secondary:hover {
+    background: var(--button-secondary-hover);
+    border-color: transparent;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 32px;
+    padding-bottom: 80px;
+  }
+
+  .main {
+    align-items: center;
+  }
+
+  .main ol {
+    text-align: center;
+  }
+
+  .ctas {
+    flex-direction: column;
+  }
+
+  .ctas a {
+    font-size: 14px;
+    height: 40px;
+    padding: 0 16px;
+  }
+
+  a.secondary {
+    min-width: auto;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo {
+    filter: invert();
+  }
+}

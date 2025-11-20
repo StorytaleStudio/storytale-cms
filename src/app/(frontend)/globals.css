@@ -1,0 +1,194 @@
+:root {
+  font-size: calc(.8rem + ((1vw - 7.68px) * .7426));
+  --background: var(--color-mono-secondary);
+  --foreground: var(--color-mono-primary);
+  --menu-bg-color: rgba(255,255,255,0.1);
+  --menu-font-color: rgba(255,255,255,1);
+
+
+  --accent-color-1: red;
+  --accent-color-2: blue;
+  /*---color---*/
+  --color-primary: #CF4A00;
+  --color-secondary: #0038FF;
+  --color-mono-primary: #FFFFFF;
+  --color-mono-secondary: #313131;
+  --color-mono-dark: #1D1D1D;
+  --color-alert: #FA4D56;
+  --color-success: #8EE570;
+  --color-warning: #FFD232;
+  --color-info: #40BEDA;
+  --color-caution: #FF832B;
+  --color-accent-primary-light: color-mix(in srgb, #fff9 50%, var(--color-primary) 50%);
+  --color-accent-primary-dark: color-mix(in srgb, #0009 50%, var(--color-primary) 50%);
+  --color-accent-secondary-light: color-mix(in srgb, #fff9 50%, var(--color-secondary) 50%);
+  --color-accent-secondary-dark: color-mix(in srgb, #0009 50%, var(--color-secondary) 50%);
+  /*---type---*/
+  --font-family-primary: "Founders Grotesk", Arial, sans-serif;
+  --font-family-secondary: Inter, sans-serif;
+  --type-scale: 1.25;
+  --type-base: 1rem;
+  --type-display: calc(var(--type-h1) * var(--type-scale));
+  --type-h1: calc(var(--type-h2) * var(--type-scale));
+  --type-h2: calc(var(--type-h3) * var(--type-scale));
+  --type-h3: calc(var(--type-h4) * var(--type-scale));
+  --type-h4: calc((var(--type-h5)) * var(--type-scale));
+  --type-h5: calc(var(--type-h6) * var(--type-scale));
+  --type-h6: calc(var(--type-base) * var(--type-scale));
+  --type-small: calc(var(--type-base) / var(--type-scale));
+  --type-caption: calc(var(--type-small) / var(--type-scale));
+  /*---spacing--*/
+  --spacing-01: .125rem;
+  --spacing-02: .25rem;
+  --spacing-03: .5rem;
+  --spacing-04: .875rem;
+  --spacing-05: 1rem;
+  --spacing-06: 1.5rem;
+  --spacing-07: 2rem;
+  --spacing-08: 2.5rem;
+  --spacing-09: 3rem;
+  --spacing-10: 4rem;
+  --spacing-11: 5rem;
+  --spacing-12: 6rem;
+  --spacing-13: 10rem;
+  /*---misc--*/
+  --core-padding: var(--spacing-07);
+  --max-width: 90rem;
+  --z-index-menu-high: 10;
+  --z-index-menu-low: 5;
+  --z-index-content: 2;
+
+}
+::selection {
+  background: rgba(var(--accent-color-1),0.6);
+}
+
+
+* {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #888 #f1f1f1; /* Firefox: thumb track */
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+  border: 2px solid #f1f1f1; /* Creates padding effect */
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  * {
+    scrollbar-color: var(--accent-color-1) #2a2a2a;
+  }
+  
+  *::-webkit-scrollbar-track {
+    background: var(--accent-color-1);
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background: #555;
+    border-color: #2a2a2a;
+  }
+  
+  *::-webkit-scrollbar-thumb:hover {
+    background: #777;
+  }
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-primary), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+      scroll-snap-type: y mandatory;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+.frame-logo {
+  position: absolute;
+  width: 4rem;
+  height: 4rem;
+  color: white;
+  bottom: var(--core-padding);
+  right: var(--core-padding);
+}
+
+section {
+  scroll-snap-align: start;
+}
+
+section:last-of-type {
+  scroll-snap-align: end;
+}
+
+footer {
+  position: sticky;
+  bottom:0;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  padding: var(--core-padding);
+}
+
+footer .aside{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  font-size: var(--type-small);
+  max-width: 18rem;
+}
+
+
+footer .aside .contact {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+footer .aside .below {
+  display: flex;
+  flex-direction: column;
+  /* font-weight: 600; */
+  row-gap: 0.5rem;
+}
+footer .aside .below a {
+  font-size: var(--type-small);
+}
