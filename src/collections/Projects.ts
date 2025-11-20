@@ -1,14 +1,14 @@
 import type { CollectionConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
-export const Journal: CollectionConfig = {
-  slug: 'journal',
+export const Projects: CollectionConfig = {
+  slug: 'projects',
   access: {
     read: () => true,
   },
   fields: [
     {
-      name: 'journal-title',
+      name: 'project-title',
       type: 'text',
       required: true,
     },
