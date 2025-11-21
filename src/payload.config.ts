@@ -32,7 +32,7 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-    onInit: async (payload) => {
+    onInit: async () => {
     console.log('Payload initialized!')
     console.log('DATABASE_URI exists:', !!process.env.DATABASE_URI)
     console.log('DATABASE_URI starts with:', process.env.DATABASE_URI?.substring(0, 20))
