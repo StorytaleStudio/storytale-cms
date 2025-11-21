@@ -16,6 +16,14 @@ import { Musings } from './collections/Musings'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+console.log('=== PAYLOAD CONFIG LOADING ===')
+console.log('DATABASE_URI exists:', !!process.env.DATABASE_URI)
+console.log('DATABASE_URI preview:', process.env.DATABASE_URI?.substring(0, 30) + '...')
+console.log('PAYLOAD_SECRET exists:', !!process.env.PAYLOAD_SECRET)
+console.log('NODE_ENV:', process.env.NODE_ENV)
+
+
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -32,11 +40,6 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-    onInit: async () => {
-    console.log('Payload initialized!')
-    console.log('DATABASE_URI exists:', !!process.env.DATABASE_URI)
-    console.log('DATABASE_URI starts with:', process.env.DATABASE_URI?.substring(0, 20))
-  },
   sharp,
   plugins: [
     // storage-adapter-placeholder
