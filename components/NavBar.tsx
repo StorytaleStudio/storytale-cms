@@ -89,7 +89,7 @@ export default function NavBar() {
               color: 'white',
               fontFamily: "var(--font-primary)",
               fontWeight: isActive ? "500" : "normal",
-              fontSize: "0.875rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.05rem",
               textTransform: "uppercase",
               whiteSpace: "nowrap",
