@@ -13,12 +13,10 @@ import { Journal } from './collections/Journal'
 import { Projects } from './collections/Projects'
 import { Musings } from './collections/Musings'
 import { Offers } from './collections/Offers'
+import { Services } from './collections/Services'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-
-
-
 
 export default buildConfig({
   admin: {
@@ -27,7 +25,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Packages, Journal, Projects, Musings, Offers],
+  collections: [Users, Media, Services, Projects, Packages, Offers, Journal, Musings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
