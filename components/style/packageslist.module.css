@@ -19,7 +19,7 @@
     color: var(--color-mono-secondary);
     padding: 2rem 4rem;
     border-radius: 0.25rem;
-    font-weight: 600;
+
 }
 
 .packagesCard h3 {
@@ -34,6 +34,7 @@
     opacity: 0.4;
     padding-left: 0.125em;
     padding-bottom: 1rem;
+    font-weight: 600;
 }
 
 .packagesCard ul {
@@ -43,4 +44,5 @@
 
 .ctaButton {
     text-transform: uppercase;
+    font-weight: 600;
 }
