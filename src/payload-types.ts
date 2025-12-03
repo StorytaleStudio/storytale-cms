@@ -73,6 +73,7 @@ export interface Config {
     journal: Journal;
     projects: Project;
     musings: Musing;
+    offers: Offer;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     journal: JournalSelect<false> | JournalSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     musings: MusingsSelect<false> | MusingsSelect<true>;
+    offers: OffersSelect<false> | OffersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -173,6 +175,15 @@ export interface Media {
 export interface Package {
   id: string;
   'package-name': string;
+  byline: string;
+  'elevator-pitch': string;
+  'package-link': string;
+  'package-description': string;
+  'package-outcomes': {
+    'outcome-one': string;
+    'outcome-two': string;
+    'outcome-three': string;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -253,6 +264,17 @@ export interface Musing {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offers".
+ */
+export interface Offer {
+  id: string;
+  'offer-name': string;
+  'offer-info': string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -298,6 +320,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'musings';
         value: string | Musing;
+      } | null)
+    | ({
+        relationTo: 'offers';
+        value: string | Offer;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -387,6 +413,17 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface PackagesSelect<T extends boolean = true> {
   'package-name'?: T;
+  byline?: T;
+  'elevator-pitch'?: T;
+  'package-link'?: T;
+  'package-description'?: T;
+  'package-outcomes'?:
+    | T
+    | {
+        'outcome-one'?: T;
+        'outcome-two'?: T;
+        'outcome-three'?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -417,6 +454,16 @@ export interface ProjectsSelect<T extends boolean = true> {
 export interface MusingsSelect<T extends boolean = true> {
   'musing-title'?: T;
   content?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offers_select".
+ */
+export interface OffersSelect<T extends boolean = true> {
+  'offer-name'?: T;
+  'offer-info'?: T;
   updatedAt?: T;
   createdAt?: T;
 }
