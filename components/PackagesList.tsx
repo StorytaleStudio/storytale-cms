@@ -69,7 +69,7 @@ function EmptyState(): JSX.Element {
 }
 
 // Fetch packages with proper error handling
-async function fetchPackages(limit?: number): Promise<Package[]> {
+async function fetchPackages(limit?: number, sortField: string = 'createdAt'): Promise<Package[]> {
   const payloadUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL
 
   if (!payloadUrl) {
@@ -80,6 +80,8 @@ async function fetchPackages(limit?: number): Promise<Package[]> {
   if (limit) {
     url.searchParams.set('limit', limit.toString())
   }
+
+  url.searchParams.set('sort', sortField)
 
   const response = await fetch(url.toString(), {
     next: { revalidate: 60 }, // ISR: revalidate every 60 seconds

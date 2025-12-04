@@ -21,19 +21,19 @@ const themes: Theme[] = [
     name: 'Dawn',
     gradientColors: ['#FF9A8B', '#FF6A88', '#FFD6A5'],
     noiseTint: '#1c1c1cff',
-    noiseIntensity: 0.5,
+    noiseIntensity: 0.8,
   },
   {
     name: 'Day',
     gradientColors: ['#f0ec0fff', '#99E0FF', '#A0E9FD'],
     noiseTint: '#1c1c1cff',
-    noiseIntensity: 0.6,
+    noiseIntensity: 0.8,
   },
   {
     name: 'Afternoon',
     gradientColors: ['#f3c33dff', '#EC3537', '#FFEF99'],
     noiseTint: '#1c1c1cff',
-    noiseIntensity: 0.4,
+    noiseIntensity: 0.8,
   },
   {
     name: 'Sunset',
@@ -45,7 +45,7 @@ const themes: Theme[] = [
     name: 'Night',
     gradientColors: ['#87e2c4ff', '#4CA1AF', '#032aa7ff'],
     noiseTint: '#aaaaaa',
-    noiseIntensity: 0.4,
+    noiseIntensity: 0.6,
   },
 ]
 
@@ -55,31 +55,31 @@ const lightThemes: Theme[] = [
     name: 'Dawn Light',
     gradientColors: ['#FF9A8B', '#FF6A88', '#FFD6A5'],
     noiseTint: '#1c1c1c33',
-    noiseIntensity: 0.3,
+    noiseIntensity: 0.6,
   },
   {
     name: 'Day Light',
     gradientColors: ['#f0ec0fff', '#99E0FF', '#A0E9FD'],
     noiseTint: '#1c1c1c33',
-    noiseIntensity: 0.3,
+    noiseIntensity: 0.6,
   },
   {
     name: 'Afternoon Light',
     gradientColors: ['#f3c33dff', '#EC3537', '#FFEF99'],
     noiseTint: '#1c1c1c33',
-    noiseIntensity: 0.2,
+    noiseIntensity: 0.6,
   },
   {
     name: 'Sunset Light',
     gradientColors: ['#FA709A', '#f3256aff', '#ff00bfff'],
     noiseTint: '#1c1c1c33',
-    noiseIntensity: 0.4,
+    noiseIntensity: 0.6,
   },
   {
     name: 'Night Light',
     gradientColors: ['#87e2c4ff', '#4CA1AF', '#032aa7ff'],
     noiseTint: '#1c1c1c33',
-    noiseIntensity: 0.2,
+    noiseIntensity: 0.6,
   },
 ]
 
@@ -206,8 +206,8 @@ export default function FantasyBackground({
     let t = 0
     const animate = () => {
       t += 0.01
-      const g1 = Math.sin(t) * 10
-      const g2 = Math.cos(t * 0.8) * 10
+      const g1 = Math.sin(t) * 15
+      const g2 = Math.cos(t * 0.8) * 15
       el.style.setProperty('--g1-offset', `${g1}px`)
       el.style.setProperty('--g2-offset', `${g2}px`)
 
@@ -303,7 +303,7 @@ export default function FantasyBackground({
     window.addEventListener('resize', resize)
 
     let lastTime = 0
-    const fpsInterval = 1000 / 20 // 20fps for noise
+    const fpsInterval = 1000 / 24 // 24fps for noise
 
     const animateNoise = (time: number) => {
       if (time - lastTime < fpsInterval) {
@@ -322,7 +322,7 @@ export default function FantasyBackground({
 
       // Optimized noise generation
       for (let i = 0; i < data.length; i += 4) {
-        const v = Math.floor(Math.random() * noiseIntensity * 255)
+        const v = Math.floor(Math.random() * noiseIntensity * 360)
         data[i] = data[i + 1] = data[i + 2] = v
         data[i + 3] = darkMode ? 20 : 10 // Less intense noise in light mode
       }
@@ -411,7 +411,7 @@ export default function FantasyBackground({
         }
 
         const isFirst = idx === 0
-        const xVar = isFirst ? 'var(--g1-offset, 0)' : 'calc(100% + var(--g2-offset, 0))'
+        const xVar = isFirst ? 'var(--g1-offset, 0)' : 'calc(50% + var(--g2-offset, 0))'
         const yVar = isFirst ? 'var(--g1-offset, 0)' : '100%'
 
         return (
@@ -425,7 +425,7 @@ export default function FantasyBackground({
                 top: '-25%',
                 left: '-25%',
                 transition: 'all 0.4s ease-in-out',
-                background: `radial-gradient(circle at ${xVar} ${yVar}, ${color} 0%, transparent 50%)`,
+                background: `radial-gradient(circle at ${xVar} ${yVar}, ${color} 0%, transparent calc(${idx} * 75%))`,
                 zIndex: -4,
                 pointerEvents: 'none',
               }}
