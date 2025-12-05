@@ -28,7 +28,7 @@ export default function Home() {
         </aside>
         <main className={styles.main}></main>
       </section>
-      <section data-section="dark" className={styles.next}>
+      <section data-section="dark" data-background="light" className={styles.next}>
         <aside className={styles.aside}>
           <h2>Next Section</h2>
         </aside>

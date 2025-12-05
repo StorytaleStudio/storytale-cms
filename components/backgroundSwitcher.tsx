@@ -9,7 +9,7 @@ export default function ScrollBackground() {
   useEffect(() => {
     const handleScroll = () => {
       // Use the center of viewport as the detection point
-      const viewportCenter = window.innerHeight / 1.05
+      const viewportCenter = window.innerHeight / 2
 
       // Get all sections with data-section attribute
       const sections = document.querySelectorAll('[data-background]')
@@ -19,7 +19,7 @@ export default function ScrollBackground() {
         const rect = section.getBoundingClientRect()
         const sectionTop = rect.top
         const sectionBottom = rect.bottom
-        const top5Percent = sectionTop + rect.height * 0.05
+        const top5Percent = sectionTop + rect.height * 1.05
 
         // Check if viewport center is within the section and past the top 5%
         if (viewportCenter >= top5Percent && viewportCenter <= sectionBottom) {
