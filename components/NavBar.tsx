@@ -54,7 +54,7 @@ export default function NavBar() {
         position: 'fixed',
         top: '2rem',
         right: '2rem',
-        zIndex: 10,
+        zIndex: 15,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-end',
