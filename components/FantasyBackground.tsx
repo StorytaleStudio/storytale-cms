@@ -321,7 +321,7 @@ export default function FantasyBackground({
       const noiseIntensity = theme.noiseIntensity
 
       // Optimized noise generation with spacing
-      const spacing = 2 // Increase this number for more spacing (2-5 works well)
+      const spacing = 4 // Increase this number for more spacing (2-5 works well)
       for (let y = 0; y < h; y += spacing) {
         for (let x = 0; x < w; x += spacing) {
           if (Math.random() > 0.5) {
