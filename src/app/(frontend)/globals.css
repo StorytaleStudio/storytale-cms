@@ -201,5 +201,5 @@ footer .aside .below a {
 
 
 .gradient-transition {
-  transition: background 2s ease-in-out;
+  transition: all 2s ease-in-out;
 }

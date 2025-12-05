@@ -116,6 +116,9 @@ export default function FantasyBackground({
   const containerRef = useRef<HTMLDivElement | null>(null)
   const animationFrameRef = useRef<number | undefined>(undefined)
   const noiseFrameRef = useRef<number | undefined>(undefined)
+  const transitionRafRef = useRef<number | undefined>(undefined)
+  const gradientDivsRef = useRef<{ [key: number]: HTMLDivElement | null }>({})
+  const frameDivsRef = useRef<{ [key: number]: HTMLDivElement | null }>({})
   const framePositionsRef = useRef<{ x: number; y: number }[]>([
     { x: 30, y: 20 },
     { x: 70, y: 60 },
@@ -135,14 +138,11 @@ export default function FantasyBackground({
     const min = now.getMinutes()
     const totalMinutes = hour * 60 + min
 
-    // console.log('Current time:', hour, ':', min, '- Total minutes:', totalMinutes);
-
     let themeIdx = 4 // default to night
 
     // Dawn: 5:00-7:59 (300-479 minutes)
     if (totalMinutes >= 300 && totalMinutes < 480) {
       themeIdx = 0
-      // console.log('Theme: Dawn');
     }
     // Day: 8:00-11:59 (480-719 minutes)
     else if (totalMinutes >= 480 && totalMinutes < 720) {
@@ -155,9 +155,6 @@ export default function FantasyBackground({
     // Sunset: 17:00-19:59 (1020-1199 minutes)
     else if (totalMinutes >= 1020 && totalMinutes < 1200) {
       themeIdx = 3
-    }
-    // Night: 20:00-4:59 (1200+ or 0-299 minutes)
-    else {
     }
 
     return themeIdx
@@ -172,7 +169,6 @@ export default function FantasyBackground({
 
   const [gradientColors, setGradientColors] = useState(themes[4].gradientColors)
   const [framePositions, setFramePositions] = useState(framePositionsRef.current)
-  const [renderKey, setRenderKey] = useState(0)
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -188,14 +184,35 @@ export default function FantasyBackground({
     setThemeIndex(correctTheme)
     setTargetThemeIndex(correctTheme)
     setGradientColors(activeThemes[correctTheme].gradientColors)
-    setRenderKey((prev) => prev + 1)
   }, [])
 
   // Handle dark mode changes
   useEffect(() => {
     if (!isMounted) return
     setGradientColors(activeThemes[themeIndex].gradientColors)
-    setRenderKey((prev) => prev + 1)
+
+    // Update gradient divs immediately on dark mode change
+    Object.keys(gradientDivsRef.current).forEach((key) => {
+      const idx = parseInt(key)
+      const div = gradientDivsRef.current[idx]
+      if (div && idx < gradientColors.length - 1) {
+        const isFirst = idx === 0
+        const xVar = isFirst ? 'var(--g1-offset, 0)' : 'calc(50% + var(--g2-offset, 0))'
+        const yVar = isFirst ? 'var(--g1-offset, 0)' : '100%'
+        div.style.background = `radial-gradient(circle at ${xVar} ${yVar}, ${activeThemes[themeIndex].gradientColors[idx]} 0%, transparent calc(${idx} * 75%))`
+      } else if (div && idx === gradientColors.length - 1) {
+        div.style.background = `linear-gradient(to right, ${activeThemes[themeIndex].gradientColors[idx]}, transparent)`
+      }
+    })
+
+    // Update frame colors
+    Object.keys(frameDivsRef.current).forEach((key) => {
+      const idx = parseInt(key)
+      const div = frameDivsRef.current[idx]
+      if (div && idx < gradientColors.length - 1) {
+        div.style.color = activeThemes[themeIndex].gradientColors[idx]
+      }
+    })
   }, [darkMode, isMounted])
 
   // Animate gradient drift - optimized with refs
@@ -258,7 +275,7 @@ export default function FantasyBackground({
     return () => clearInterval(interval)
   }, [themeIndex, getThemeByTime, isMounted])
 
-  // Smooth theme fade transition
+  // Smooth theme fade transition with JS animation
   useEffect(() => {
     if (themeIndex === targetThemeIndex) return
 
@@ -266,23 +283,58 @@ export default function FantasyBackground({
     const endColors = activeThemes[targetThemeIndex].gradientColors
     const duration = 2000
     let startTime: number | null = null
-    let rafId: number
 
     const animate = (time: number) => {
       if (!startTime) startTime = time
-      const t = Math.min((time - startTime) / duration, 1)
-      const colors = startColors.map((c, i) => lerpColor(c, endColors[i], t))
+      const elapsed = time - startTime
+      const t = Math.min(elapsed / duration, 1)
+
+      // Ease-in-out function for smoother animation
+      const eased = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+
+      const colors = startColors.map((c, i) => lerpColor(c, endColors[i], eased))
       setGradientColors(colors)
 
+      // Manually update the gradient divs
+      Object.keys(gradientDivsRef.current).forEach((key) => {
+        const idx = parseInt(key)
+        const div = gradientDivsRef.current[idx]
+        if (div && idx < colors.length - 1) {
+          const isFirst = idx === 0
+          const xVar = isFirst ? 'var(--g1-offset, 0)' : 'calc(50% + var(--g2-offset, 0))'
+          const yVar = isFirst ? 'var(--g1-offset, 0)' : '100%'
+          div.style.background = `radial-gradient(circle at ${xVar} ${yVar}, ${colors[idx]} 0%, transparent calc(${idx} * 75%))`
+        } else if (div && idx === colors.length - 1) {
+          div.style.background = `linear-gradient(to right, ${colors[idx]}, transparent)`
+        }
+      })
+
+      // Update frame colors
+      Object.keys(frameDivsRef.current).forEach((key) => {
+        const idx = parseInt(key)
+        const div = frameDivsRef.current[idx]
+        if (div && idx < colors.length - 1) {
+          div.style.color = colors[idx]
+        }
+      })
+
       if (t < 1) {
-        rafId = requestAnimationFrame(animate)
+        transitionRafRef.current = requestAnimationFrame(animate)
       } else {
         setThemeIndex(targetThemeIndex)
       }
     }
 
-    rafId = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(rafId)
+    if (transitionRafRef.current) {
+      cancelAnimationFrame(transitionRafRef.current)
+    }
+    transitionRafRef.current = requestAnimationFrame(animate)
+
+    return () => {
+      if (transitionRafRef.current) {
+        cancelAnimationFrame(transitionRafRef.current)
+      }
+    }
   }, [targetThemeIndex, themeIndex, activeThemes])
 
   // Noise layer - optimized with throttling
@@ -320,18 +372,11 @@ export default function FantasyBackground({
       const theme = activeThemes[themeIndex]
       const noiseIntensity = theme.noiseIntensity
 
-      // Optimized noise generation with spacing
-      const spacing = 4 // Increase this number for more spacing (2-5 works well)
-      for (let y = 0; y < h; y += spacing) {
-        for (let x = 0; x < w; x += spacing) {
-          if (Math.random() > 0.5) {
-            // 50% chance to place noise
-            const i = (y * w + x) * 4
-            const v = Math.floor(Math.random() * noiseIntensity * 360)
-            data[i] = data[i + 1] = data[i + 2] = v
-            data[i + 3] = darkMode ? 20 : 10 // Less intense noise in light mode
-          }
-        }
+      // Optimized noise generation
+      for (let i = 0; i < data.length; i += 4) {
+        const v = Math.floor(Math.random() * noiseIntensity * 360)
+        data[i] = data[i + 1] = data[i + 2] = v
+        data[i + 3] = darkMode ? 20 : 10 // Less intense noise in light mode
       }
 
       ctx.putImageData(imageData, 0, 0)
@@ -357,7 +402,6 @@ export default function FantasyBackground({
 
   return (
     <div
-      className="gradient-transition"
       ref={containerRef}
       style={{
         position: 'fixed',
@@ -368,16 +412,17 @@ export default function FantasyBackground({
         pointerEvents: 'none',
         overflow: 'hidden',
         background: gradientColors[2],
+        transition: 'all 0.5s ease-in-out',
       }}
     >
       {/* Overlay */}
       <div
-        className="gradient-transition"
         style={{
           position: 'absolute',
           inset: 0,
           background: overlayGradient,
           zIndex: -2,
+          transition: 'background 0.5s ease',
         }}
       />
 
@@ -400,12 +445,13 @@ export default function FantasyBackground({
 
       {/* Animated gradients */}
       {gradientColors.map((color, idx) => {
-        // console.log(`Rendering gradient ${idx}:`, color);
         if (idx === gradientColors.length - 1) {
           return (
             <div
-              className="gradient-transition"
               key={`gradient-${idx}`}
+              ref={(el) => {
+                gradientDivsRef.current[idx] = el
+              }}
               style={{
                 position: 'absolute',
                 inset: 0,
@@ -424,7 +470,9 @@ export default function FantasyBackground({
         return (
           <div key={`gradient-${idx}`}>
             <div
-              className="gradient-transition"
+              ref={(el) => {
+                gradientDivsRef.current[idx] = el
+              }}
               style={{
                 position: 'absolute',
                 width: '150%',
@@ -438,11 +486,13 @@ export default function FantasyBackground({
               }}
             />
             <div
-              className="gradient-transition"
+              ref={(el) => {
+                frameDivsRef.current[idx] = el
+              }}
               style={{
                 color: color,
                 width: '30rem',
-                filter: `blur(${darkMode ? 8 : 5}rem)`,
+                filter: `blur(${darkMode ? 6 : 5}rem)`,
                 position: 'absolute',
                 mixBlendMode: 'color-dodge',
                 top: `${framePositions[idx]?.y || (isFirst ? 20 : 60)}%`,
@@ -450,6 +500,7 @@ export default function FantasyBackground({
                 transform: 'translate(-50%, -50%)',
                 zIndex: -2,
                 opacity: darkMode ? 1 : 0.7,
+                transition: 'opacity 0.5s ease-in-out',
               }}
             >
               <StorytaleFrame />
