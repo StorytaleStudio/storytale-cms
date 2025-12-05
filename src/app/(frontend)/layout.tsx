@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
-import FantasyBackground from 'components/FantasyBackground'
-import Link from 'next/link'
 import NavBar from 'components/NavBar'
 import LogoLink from 'components/Logo'
 import localFont from 'next/font/local'
@@ -92,7 +90,6 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  dark,
 }: Readonly<{
   children: React.ReactNode
   dark: boolean

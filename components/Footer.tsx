@@ -5,7 +5,10 @@ export default function Footer() {
     <div className="footer">
       <div className="aside">
         <div>
-          <p>Prefer to chat more? Reach out so we can tell tales together.</p>
+          <p className="footer-text">
+            Prefer to chat more? <br />
+            Reach out so we can tell tales together.
+          </p>
         </div>
         <div className="contact">
           <ContactAccordion />

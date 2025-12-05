@@ -442,7 +442,7 @@ export default function FantasyBackground({
               style={{
                 color: color,
                 width: '30rem',
-                filter: `blur(${darkMode ? 6 : 5}rem)`,
+                filter: `blur(${darkMode ? 8 : 5}rem)`,
                 position: 'absolute',
                 mixBlendMode: 'color-dodge',
                 top: `${framePositions[idx]?.y || (isFirst ? 20 : 60)}%`,
