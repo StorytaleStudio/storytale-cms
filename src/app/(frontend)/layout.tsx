@@ -92,7 +92,6 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
-  dark: boolean
 }>) {
   return (
     <html lang="en">
