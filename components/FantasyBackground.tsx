@@ -320,11 +320,18 @@ export default function FantasyBackground({
       const theme = activeThemes[themeIndex]
       const noiseIntensity = theme.noiseIntensity
 
-      // Optimized noise generation
-      for (let i = 0; i < data.length; i += 4) {
-        const v = Math.floor(Math.random() * noiseIntensity * 360)
-        data[i] = data[i + 1] = data[i + 2] = v
-        data[i + 3] = darkMode ? 20 : 10 // Less intense noise in light mode
+      // Optimized noise generation with spacing
+      const spacing = 2 // Increase this number for more spacing (2-5 works well)
+      for (let y = 0; y < h; y += spacing) {
+        for (let x = 0; x < w; x += spacing) {
+          if (Math.random() > 0.5) {
+            // 50% chance to place noise
+            const i = (y * w + x) * 4
+            const v = Math.floor(Math.random() * noiseIntensity * 360)
+            data[i] = data[i + 1] = data[i + 2] = v
+            data[i + 3] = darkMode ? 20 : 10 // Less intense noise in light mode
+          }
+        }
       }
 
       ctx.putImageData(imageData, 0, 0)
@@ -350,6 +357,7 @@ export default function FantasyBackground({
 
   return (
     <div
+      className="gradient-transition"
       ref={containerRef}
       style={{
         position: 'fixed',
@@ -360,17 +368,16 @@ export default function FantasyBackground({
         pointerEvents: 'none',
         overflow: 'hidden',
         background: gradientColors[2],
-        transition: 'all 0.5s ease-in-out',
       }}
     >
       {/* Overlay */}
       <div
+        className="gradient-transition"
         style={{
           position: 'absolute',
           inset: 0,
           background: overlayGradient,
           zIndex: -2,
-          transition: 'background 0.5s ease',
         }}
       />
 
@@ -397,11 +404,11 @@ export default function FantasyBackground({
         if (idx === gradientColors.length - 1) {
           return (
             <div
-              key={`${renderKey}-${color}-${idx}`}
+              className="gradient-transition"
+              key={`gradient-${idx}`}
               style={{
                 position: 'absolute',
                 inset: 0,
-                transition: 'all 0.4s ease-in-out',
                 background: `linear-gradient(to right, ${color}, transparent)`,
                 zIndex: -4,
                 pointerEvents: 'none',
@@ -415,8 +422,9 @@ export default function FantasyBackground({
         const yVar = isFirst ? 'var(--g1-offset, 0)' : '100%'
 
         return (
-          <div key={`${renderKey}-${color}-${idx}`}>
+          <div key={`gradient-${idx}`}>
             <div
+              className="gradient-transition"
               style={{
                 position: 'absolute',
                 width: '150%',
@@ -424,13 +432,13 @@ export default function FantasyBackground({
                 borderRadius: '50%',
                 top: '-25%',
                 left: '-25%',
-                transition: 'all 0.4s ease-in-out',
                 background: `radial-gradient(circle at ${xVar} ${yVar}, ${color} 0%, transparent calc(${idx} * 75%))`,
                 zIndex: -4,
                 pointerEvents: 'none',
               }}
             />
             <div
+              className="gradient-transition"
               style={{
                 color: color,
                 width: '30rem',
@@ -442,7 +450,6 @@ export default function FantasyBackground({
                 transform: 'translate(-50%, -50%)',
                 zIndex: -2,
                 opacity: darkMode ? 1 : 0.7,
-                transition: 'all 0.5s ease-in-out',
               }}
             >
               <StorytaleFrame />

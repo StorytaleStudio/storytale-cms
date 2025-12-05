@@ -19,7 +19,7 @@ export const sectionColors: SectionColors = {
   },
   dark: {
     menuBgColor: 'rgba(0, 0, 0, 0.2)',
-    menuFontColor: '#000000',
+    menuFontColor: '#333',
   },
   work: {
     menuBgColor: 'rgba(0, 0, 0, 0.5)',
@@ -27,7 +27,7 @@ export const sectionColors: SectionColors = {
   },
   services: {
     menuBgColor: 'rgba(255, 255, 255, 0.5)',
-    menuFontColor: '#000000',
+    menuFontColor: '#333',
   },
   // Add more sections as needed
 }

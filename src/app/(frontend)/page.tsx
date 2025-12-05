@@ -17,11 +17,13 @@ export default function Home() {
           </ScrollFade>
 
           <div>
-            <h2>
-              <span>Creating Legends for</span>
-              Legends
-            </h2>
-            <button className={styles.ctaButton}>Get to know your brand better!</button>
+            <ScrollFade>
+              <h2>
+                <span>Creating Legends for</span>
+                Legends
+              </h2>
+              <button className={styles.ctaButton}>Get to know your brand better!</button>
+            </ScrollFade>
           </div>
         </aside>
         <main className={styles.main}></main>

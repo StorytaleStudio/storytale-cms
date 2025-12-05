@@ -1,7 +1,6 @@
 import React, { JSX } from 'react'
 import Link from 'next/link'
 import styles from './style/packageslist.module.css'
-import ScrollFade from './TextScrollFade'
 
 // Payload API response type
 interface PayloadResponse<T> {
@@ -112,34 +111,40 @@ export default async function PackagesList({
       <section data-section="dark" data-background="light" className={styles.different}>
         <main className={styles.Bigmain}>
           <div className={styles.listWrapper}>
-            <ScrollFade>
-              <div className={styles.packagesList}>
-                {packages.map((pkg: Package) => (
-                  <article key={pkg.id} className={styles.packagesCard}>
-                    <div>
-                      <p className={styles.byline}>{pkg.byline}</p>
-                      <h3>{pkg['package-name']}</h3>
-                    </div>
-                    <p className={styles.elevatorPitch}>{pkg['elevator-pitch']}</p>
-                    <div className={styles.outcomes}>
-                      <ul>
-                        <li>{pkg['package-outcomes']['outcome-one']}</li>
-                        <li>{pkg['package-outcomes']['outcome-two']}</li>
-                        <li>{pkg['package-outcomes']['outcome-three']}</li>
-                      </ul>
-                    </div>
+            <div className={styles.packagesList}>
+              {packages.map((pkg: Package, index: number) => (
+                <article
+                  key={pkg.id}
+                  className={styles.packagesCard}
+                  style={{
+                    position: 'sticky',
+                    top: `${6 + index * 3}rem`,
+                    zIndex: packages.length + index,
+                  }}
+                >
+                  <div>
+                    <p className={styles.byline}>{pkg.byline}</p>
+                    <h3>{pkg['package-name']}</h3>
+                  </div>
+                  <p className={styles.elevatorPitch}>{pkg['elevator-pitch']}</p>
+                  <div className={styles.outcomes}>
+                    <ul>
+                      <li>{pkg['package-outcomes']['outcome-one']}</li>
+                      <li>{pkg['package-outcomes']['outcome-two']}</li>
+                      <li>{pkg['package-outcomes']['outcome-three']}</li>
+                    </ul>
+                  </div>
 
-                    <Link
-                      href={'/packages' + pkg['package-link']}
-                      className={styles.ctaButton}
-                      aria-label={`Learn more about ${pkg['package-name']}`}
-                    >
-                      Learn More
-                    </Link>
-                  </article>
-                ))}
-              </div>
-            </ScrollFade>
+                  <Link
+                    href={'/packages' + pkg['package-link']}
+                    className={styles.ctaButton}
+                    aria-label={`Learn more about ${pkg['package-name']}`}
+                  >
+                    Learn More
+                  </Link>
+                </article>
+              ))}
+            </div>
           </div>
         </main>
       </section>

@@ -4,8 +4,11 @@
 }
 
 .packagesList {
-    display: grid;
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-bottom: 50vh; /* Extra space for scrolling */
+    position: relative;
 }
 
 .packagesCard {
@@ -14,13 +17,18 @@
     grid-template-columns: 1.5fr repeat(2, 1fr) auto;
     gap: 2rem;
     width: 100%;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(1rem);
+    background: rgba(250, 250, 250, 1);
+    mix-blend-mode: luminosity;
     color: var(--color-mono-secondary);
     padding: 2rem 4rem;
     border-radius: 0.25rem;
-
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center top;
+    min-height: 200px;
 }
+
+
+
 
 .packagesCard h3 {
     font-family: var(--font-secondary);
