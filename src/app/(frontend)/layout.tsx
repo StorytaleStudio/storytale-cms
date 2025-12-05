@@ -96,13 +96,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${founder.variable} ${fragment.variable}`}>
-        <ScrollBackground />
         {children}
         <NavBar />
         <LogoLink />
         <footer data-section="hero">
           <Footer />
         </footer>
+        <ScrollBackground />
       </body>
     </html>
   )

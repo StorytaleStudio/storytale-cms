@@ -1,7 +1,7 @@
-import Image from 'next/image'
 import styles from './page.module.css'
 import ScrollFade from 'components/TextScrollFade'
 import PackagesList from 'components/PackagesList'
+import VideoSection from 'components/videoSection'
 
 export default function Home() {
   return (
@@ -28,21 +28,7 @@ export default function Home() {
         </aside>
         <main className={styles.main}></main>
       </section>
-      <section data-section="dark" data-background="light" className={styles.next}>
-        <aside className={styles.aside}>
-          <h2>Next Section</h2>
-        </aside>
-        <main className={styles.main}>
-          <iframe
-            src="https://www.youtube.com/embed/SaOwutdzd24?si=3PT3pxomWpInRzRi&amp;controls=0"
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          ></iframe>
-        </main>
-      </section>
+      <VideoSection />
       <PackagesList />
     </>
   )
