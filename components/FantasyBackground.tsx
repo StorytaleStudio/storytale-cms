@@ -119,6 +119,7 @@ export default function FantasyBackground({
   const transitionRafRef = useRef<number | undefined>(undefined)
   const gradientDivsRef = useRef<{ [key: number]: HTMLDivElement | null }>({})
   const frameDivsRef = useRef<{ [key: number]: HTMLDivElement | null }>({})
+  const overlayDivRef = useRef<HTMLDivElement | null>(null)
   const framePositionsRef = useRef<{ x: number; y: number }[]>([
     { x: 30, y: 20 },
     { x: 70, y: 60 },
@@ -163,12 +164,14 @@ export default function FantasyBackground({
   // Initialize with night theme (safe default for SSR)
   const [themeIndex, setThemeIndex] = useState(4)
   const [targetThemeIndex, setTargetThemeIndex] = useState(4)
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
   // Select theme set based on dark mode - memoized to prevent recalculation
   const activeThemes = useMemo(() => (darkMode ? themes : lightThemes), [darkMode])
 
   const [gradientColors, setGradientColors] = useState(themes[4].gradientColors)
   const [framePositions, setFramePositions] = useState(framePositionsRef.current)
+  const prevDarkModeRef = useRef(darkMode)
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -186,34 +189,109 @@ export default function FantasyBackground({
     setGradientColors(activeThemes[correctTheme].gradientColors)
   }, [])
 
-  // Handle dark mode changes
+  // Handle dark mode changes with animation
   useEffect(() => {
-    if (!isMounted) return
-    setGradientColors(activeThemes[themeIndex].gradientColors)
-
-    // Update gradient divs immediately on dark mode change
-    Object.keys(gradientDivsRef.current).forEach((key) => {
-      const idx = parseInt(key)
-      const div = gradientDivsRef.current[idx]
-      if (div && idx < gradientColors.length - 1) {
-        const isFirst = idx === 0
-        const xVar = isFirst ? 'var(--g1-offset, 0)' : 'calc(50% + var(--g2-offset, 0))'
-        const yVar = isFirst ? 'var(--g1-offset, 0)' : '100%'
-        div.style.background = `radial-gradient(circle at ${xVar} ${yVar}, ${activeThemes[themeIndex].gradientColors[idx]} 0%, transparent calc(${idx} * 75%))`
-      } else if (div && idx === gradientColors.length - 1) {
-        div.style.background = `linear-gradient(to right, ${activeThemes[themeIndex].gradientColors[idx]}, transparent)`
-      }
+    console.log('Dark mode effect triggered:', {
+      isMounted,
+      darkMode,
+      prevDarkMode: prevDarkModeRef.current,
+      currentColors: gradientColors,
+      targetColors: activeThemes[themeIndex].gradientColors,
     })
 
-    // Update frame colors
-    Object.keys(frameDivsRef.current).forEach((key) => {
-      const idx = parseInt(key)
-      const div = frameDivsRef.current[idx]
-      if (div && idx < gradientColors.length - 1) {
-        div.style.color = activeThemes[themeIndex].gradientColors[idx]
+    if (!isMounted) {
+      console.log('Not mounted yet, skipping')
+      return
+    }
+
+    // Check if dark mode actually changed
+    if (prevDarkModeRef.current === darkMode) {
+      console.log('Dark mode did not change, skipping')
+      return
+    }
+
+    console.log('🎨 DARK MODE TRANSITION STARTING!')
+    prevDarkModeRef.current = darkMode
+
+    setIsTransitioning(true)
+
+    const startColors = gradientColors
+    const endColors = activeThemes[themeIndex].gradientColors
+    const duration = 1000
+    let startTime: number | null = null
+    let rafId: number
+
+    const animate = (time: number) => {
+      if (!startTime) {
+        startTime = time
+        console.log('Animation started at', time)
       }
-    })
-  }, [darkMode, isMounted])
+      const elapsed = time - startTime
+      const t = Math.min(elapsed / duration, 1)
+
+      // Ease-in-out function
+      const eased = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+
+      const colors = startColors.map((c, i) => lerpColor(c, endColors[i], eased))
+
+      if (Math.floor(t * 10) !== Math.floor((t - 0.016) * 10)) {
+        console.log(`Animating: ${Math.floor(t * 100)}%`, colors)
+      }
+
+      setGradientColors(colors)
+
+      // Interpolate overlay colors
+      const startOverlay = getOverlayGradient(!darkMode)
+      const endOverlay = getOverlayGradient(darkMode)
+      const interpolatedColor = interpolateRGBA(startOverlay.color, endOverlay.color, eased)
+      const interpolatedTransparent = interpolateRGBA(
+        startOverlay.transparent,
+        endOverlay.transparent,
+        eased,
+      )
+
+      // Update gradient divs
+      Object.keys(gradientDivsRef.current).forEach((key) => {
+        const idx = parseInt(key)
+        const div = gradientDivsRef.current[idx]
+        if (div && idx < colors.length - 1) {
+          const isFirst = idx === 0
+          const xVar = isFirst ? 'var(--g1-offset, 0)' : 'calc(50% + var(--g2-offset, 0))'
+          const yVar = isFirst ? 'var(--g1-offset, 0)' : '100%'
+          div.style.background = `radial-gradient(circle at ${xVar} ${yVar}, ${colors[idx]} 0%, transparent calc(${idx} * 75%))`
+        } else if (div && idx === colors.length - 1) {
+          div.style.background = `linear-gradient(to right, ${colors[idx]}, transparent)`
+        }
+      })
+
+      // Update frame colors
+      Object.keys(frameDivsRef.current).forEach((key) => {
+        const idx = parseInt(key)
+        const div = frameDivsRef.current[idx]
+        if (div && idx < colors.length - 1) {
+          div.style.color = colors[idx]
+        }
+      })
+
+      // Update overlay gradient with interpolated colors
+      if (overlayDivRef.current) {
+        overlayDivRef.current.style.background = `radial-gradient(circle at 20% 30%, ${interpolatedColor} 0%, ${interpolatedColor} 20%, ${interpolatedTransparent} 85%), linear-gradient(to bottom right, ${interpolatedColor} 0%, ${interpolatedColor} 20%, ${interpolatedTransparent} 85%)`
+      }
+
+      if (t < 1) {
+        rafId = requestAnimationFrame(animate)
+      } else {
+        console.log('🎨 DARK MODE TRANSITION COMPLETE!')
+        setIsTransitioning(false)
+      }
+    }
+
+    rafId = requestAnimationFrame(animate)
+    return () => {
+      console.log('Cleaning up dark mode animation')
+      cancelAnimationFrame(rafId)
+    }
+  }, [darkMode, isMounted, themeIndex, activeThemes])
 
   // Animate gradient drift - optimized with refs
   useEffect(() => {
@@ -277,7 +355,7 @@ export default function FantasyBackground({
 
   // Smooth theme fade transition with JS animation
   useEffect(() => {
-    if (themeIndex === targetThemeIndex) return
+    if (themeIndex === targetThemeIndex || isTransitioning) return
 
     const startColors = activeThemes[themeIndex].gradientColors
     const endColors = activeThemes[targetThemeIndex].gradientColors
@@ -335,7 +413,7 @@ export default function FantasyBackground({
         cancelAnimationFrame(transitionRafRef.current)
       }
     }
-  }, [targetThemeIndex, themeIndex, activeThemes])
+  }, [targetThemeIndex, themeIndex, activeThemes, isTransitioning])
 
   // Noise layer - optimized with throttling
   useEffect(() => {
@@ -393,12 +471,54 @@ export default function FantasyBackground({
     }
   }, [themeIndex, darkMode, activeThemes])
 
-  // Memoized overlay gradient
+  // Memoized overlay gradient - interpolates rgba values
+  const interpolateRGBA = useCallback((from: string, to: string, t: number) => {
+    // Parse rgba values
+    const parseRGBA = (str: string) => {
+      if (str.startsWith('#')) {
+        // Convert hex to rgba
+        const hex = str.replace('#', '')
+        const r = parseInt(hex.slice(0, 2), 16)
+        const g = parseInt(hex.slice(2, 4), 16)
+        const b = parseInt(hex.slice(4, 6), 16)
+        return { r, g, b, a: 1 }
+      } else if (str.includes('rgba')) {
+        const match = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
+        if (match) {
+          return {
+            r: parseInt(match[1]),
+            g: parseInt(match[2]),
+            b: parseInt(match[3]),
+            a: match[4] ? parseFloat(match[4]) : 1,
+          }
+        }
+      } else if (str === 'transparent') {
+        return { r: 0, g: 0, b: 0, a: 0 }
+      }
+      return { r: 0, g: 0, b: 0, a: 0 }
+    }
+
+    const fromRGBA = parseRGBA(from)
+    const toRGBA = parseRGBA(to)
+
+    const r = Math.round(fromRGBA.r + (toRGBA.r - fromRGBA.r) * t)
+    const g = Math.round(fromRGBA.g + (toRGBA.g - fromRGBA.g) * t)
+    const b = Math.round(fromRGBA.b + (toRGBA.b - fromRGBA.b) * t)
+    const a = fromRGBA.a + (toRGBA.a - fromRGBA.a) * t
+
+    return `rgba(${r}, ${g}, ${b}, ${a.toFixed(3)})`
+  }, [])
+
+  const getOverlayGradient = useCallback((isDark: boolean) => {
+    const color = isDark ? '#1c1c1c' : 'rgba(255,255,255,0.85)'
+    const transparent = isDark ? 'transparent' : 'rgba(255,255,255,0)'
+    return { color, transparent }
+  }, [])
+
   const overlayGradient = useMemo(() => {
-    const color = darkMode ? '#1c1c1c' : 'rgba(255,255,255,0.85)'
-    const transparent = darkMode ? 'transparent' : 'rgba(255,255,255,0)'
+    const { color, transparent } = getOverlayGradient(darkMode)
     return `radial-gradient(circle at 20% 30%, ${color} 0%, ${color} 20%, ${transparent} 85%), linear-gradient(to bottom right, ${color} 0%, ${color} 20%, ${transparent} 85%)`
-  }, [darkMode])
+  }, [darkMode, getOverlayGradient])
 
   return (
     <div
@@ -417,12 +537,12 @@ export default function FantasyBackground({
     >
       {/* Overlay */}
       <div
+        ref={overlayDivRef}
         style={{
           position: 'absolute',
           inset: 0,
           background: overlayGradient,
           zIndex: -2,
-          transition: 'background 0.5s ease',
         }}
       />
 

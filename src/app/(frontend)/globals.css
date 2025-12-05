@@ -24,8 +24,6 @@
   --color-accent-secondary-light: color-mix(in srgb, #fff9 50%, var(--color-secondary) 50%);
   --color-accent-secondary-dark: color-mix(in srgb, #0009 50%, var(--color-secondary) 50%);
   /*---type---*/
-  --font-family-primary: "Founders Grotesk", Arial, sans-serif;
-  --font-family-secondary: Inter, sans-serif;
   --type-scale: 1.25;
   --type-base: 1rem;
   --type-display: calc(var(--type-h1) * var(--type-scale));
@@ -178,9 +176,10 @@ footer .aside{
 
 
 .footer-text {
-  font-size: 1.5rem;
-  font-weight: 300;
-  letter-spacing: 0.05rem;
+  font-size: var(--type-h6);
+  font-weight: 600;
+  font-family: var(--font-secondary);
+  line-height: 1.6;
 }
 
 footer .aside .contact {
