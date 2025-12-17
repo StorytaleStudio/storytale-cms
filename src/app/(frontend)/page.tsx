@@ -6,7 +6,7 @@ import VideoSection from 'components/videoSection'
 export default function Home() {
   return (
     <>
-      <section data-section="default" className={styles.page}>
+      <section data-section="default" data-background="dark" className={styles.page}>
         {/* <FantasyBackground darkMode={false} /> */}
         <aside className={styles.aside}>
           <ScrollFade>

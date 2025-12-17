@@ -245,3 +245,10 @@ a.secondary {
     filter: invert();
   }
 }
+
+
+.aboutTop > div{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
