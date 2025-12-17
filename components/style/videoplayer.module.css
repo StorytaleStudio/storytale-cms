@@ -64,6 +64,7 @@ display: grid;
 
 .outerArea {
     width: 100%;
+    padding: 2rem;
 }
 
 .outerArea video {
