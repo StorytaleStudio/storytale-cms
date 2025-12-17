@@ -1,31 +1,33 @@
 import ScrollFade from 'components/TextScrollFade'
 import styles from '../page.module.css'
+import { VideoApp } from 'components/VideoAbout'
+import { Video } from 'components/types'
+
+const videos: Video[] = [
+  {
+    id: 1,
+    title: 'Ocean Waves',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    thumbnail: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=300&h=200&fit=crop',
+  },
+  {
+    id: 2,
+    title: 'Mountain View',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+    thumbnail: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop',
+  },
+  {
+    id: 3,
+    title: 'City Lights',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    thumbnail: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=300&h=200&fit=crop',
+  },
+]
 
 export default function About() {
   return (
-    <div data-section="dark" data-background="light" className={styles.page}>
-      <aside className={styles.aside}>
-        <div className={styles.aboutTop}>
-          <ScrollFade>
-            <h1>The Studio</h1>
-            <p>
-              Storytale is built on the core belief that great stories spur people to action and
-              sets hearts ablaze.
-            </p>
-            <p>
-              Founded by two friends, united in the crucible of start-ups and tabletop roleplaying.
-            </p>
-          </ScrollFade>
-        </div>
-        <div>
-          <ScrollFade>
-            <h2>About</h2>
-          </ScrollFade>
-        </div>
-      </aside>
-      <main className={styles.main}>
-        <div>About</div>
-      </main>
-    </div>
+    <>
+      <VideoApp videos={videos} />
+    </>
   )
 }
