@@ -19,13 +19,10 @@ export const VideoApp: React.FC<VideoAppProps> = ({ videos }) => {
         <div className={styles.aboutTop}>
           <ScrollFade>
             <h1>{currentVideo.title}</h1>
-            <p>
-              Storytale is built on the core belief that great stories spur people to action and
-              sets hearts ablaze.
-            </p>
-            <p>
-              Founded by two friends, united in the crucible of start-ups and tabletop roleplaying.
-            </p>
+            <div
+              className={styles.videoContent}
+              dangerouslySetInnerHTML={{ __html: currentVideo.description }}
+            />
           </ScrollFade>
           <ScrollFade>
             <VideoMenu

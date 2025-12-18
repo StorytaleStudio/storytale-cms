@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from 'react'
 import styles from './style/videoplayer.module.css'
 import TVOutArea from './svgs/tv-outer'
 import TVInArea from './svgs/tv-inner'
+import VolcumeIcon from './svgs/volume-icon'
+import MuteIcon from './svgs/mute-icon'
 
 type VideoType = 'youtube' | 'vimeo' | 'direct'
 
@@ -308,7 +310,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType })
             <span className={styles.time}>{formatTime(duration)}</span>
 
             <button className={styles.volumeButton} onClick={toggleMute}>
-              {isMuted ? '🔇' : '🔊'}
+              {isMuted ? <MuteIcon /> : <VolcumeIcon />}
             </button>
 
             <input
