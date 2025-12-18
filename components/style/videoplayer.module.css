@@ -65,10 +65,45 @@ display: grid;
 .outerArea {
     width: 100%;
     padding: 2rem;
+    /* background: url('/svg/tv-outerarea.svg');
+    background-size: contain; */
+    position: relative;
+    mix-blend-mode: multiply;
+}
+.innerArea {
+  position: relative;
+  width: 100%;
+  padding: 1rem;
 }
 
-.outerArea video {
+.svgBackOut, .svgBackIn {
+  position: absolute;
+  top:0;
+  left: 0;
+  width: 100%;
+  z-index: 0;
+}
+
+.svgBackOut {
+  mix-blend-mode: multiply;
+}
+
+.videoPlayerWrapper {
+  -webkit-mask-image: url('/svg/tv-visualarea.svg');
+  mask-image: url('/svg/tv-visualarea.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  width: 100%;
+  height: 100%;
+}
+
+
+.innerArea video {
     width: 100%;
+    height: 100%;
+    transform: scale(1.1);
+    position: relative;
+    z-index: 5;
 }
 
 /* Video Menu */
