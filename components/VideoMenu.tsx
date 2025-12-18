@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react'
 import styles from './style/videoplayer.module.css'
 import { Video } from './types'
+import PlayIcon from './svgs/play-element'
 
 interface VideoMenuProps {
   videos: Video[]
@@ -17,14 +18,14 @@ export const VideoMenu: React.FC<VideoMenuProps> = ({ videos, onVideoSelect, cur
   const activeIndex = videos.findIndex((v) => v.id === currentVideoId)
   const safeActiveIndex = activeIndex === -1 ? 0 : activeIndex
 
-  const itemHeight = 3 // rem
-  const containerPadding = 0.5 // rem
-  const minimalHeight = `${itemHeight + containerPadding * 2}rem`
-  const expandedHeight = `${videos.length * itemHeight + containerPadding * 2}rem`
-
   const orderedVideos = hovered
     ? videos
     : [videos[safeActiveIndex], ...videos.filter((_, i) => i !== safeActiveIndex)]
+
+  const itemHeight = 3.75 // rem
+  const containerPadding = 0 // rem
+  const minimalHeight = `${itemHeight + containerPadding * 1.5}rem`
+  const expandedHeight = `${videos.length * itemHeight + containerPadding * 1}rem`
 
   return (
     <div
@@ -35,7 +36,6 @@ export const VideoMenu: React.FC<VideoMenuProps> = ({ videos, onVideoSelect, cur
       style={{
         height: hovered ? expandedHeight : minimalHeight,
         transition: 'height 0.4s ease',
-        padding: `${containerPadding}rem 0`,
       }}
     >
       {orderedVideos.map((video, idx) => {
@@ -57,13 +57,23 @@ export const VideoMenu: React.FC<VideoMenuProps> = ({ videos, onVideoSelect, cur
               fontWeight: isActive ? '600' : 'normal',
             }}
           >
-            <span
-              className={styles.indicator}
-              style={{
-                background: isActive ? 'white' : 'transparent',
-                transition: 'background 0.6s ease',
-              }}
-            />
+            {isActive && (
+              <div className={styles.indicator}>
+                <PlayIcon />
+              </div>
+            )}
+            {videoHover === video.id && !isActive && (
+              <span
+                className={styles.hoverIndicator}
+                style={{
+                  transition: 'opacity 0.4s ease, transform 0.4s ease',
+                  transform: 'translateX(0.125rem)',
+                }}
+              >
+                <PlayIcon />
+              </span>
+            )}
+
             <span
               className={styles.videoTitle}
               style={{
@@ -74,15 +84,6 @@ export const VideoMenu: React.FC<VideoMenuProps> = ({ videos, onVideoSelect, cur
             >
               {video.title}
             </span>
-            {videoHover === video.id && !isActive && (
-              <span
-                className={styles.hoverIndicator}
-                style={{
-                  transition: 'opacity 0.4s ease, transform 0.4s ease',
-                  transform: 'translateX(0.125rem)',
-                }}
-              />
-            )}
           </button>
         )
       })}

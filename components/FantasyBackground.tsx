@@ -20,26 +20,26 @@ const themes: Theme[] = [
   {
     name: 'Dawn',
     gradientColors: ['#FF9A8B', '#FF6A88', '#FFD6A5'],
-    noiseTint: '#1c1c1cff',
+    noiseTint: '#b6311dff',
     noiseIntensity: 0.8,
   },
   {
     name: 'Day',
     gradientColors: ['#f0ec0fff', '#99E0FF', '#A0E9FD'],
-    noiseTint: '#1c1c1cff',
+    noiseTint: '#1c5f7cff',
     noiseIntensity: 0.8,
   },
   {
     name: 'Afternoon',
     gradientColors: ['#f3c33dff', '#EC3537', '#FFEF99'],
-    noiseTint: '#1c1c1cff',
-    noiseIntensity: 0.8,
+    noiseTint: '#9c2f31ff',
+    noiseIntensity: 0.4,
   },
   {
     name: 'Sunset',
     gradientColors: ['#FA709A', '#f3256aff', '#ff00bfff'],
-    noiseTint: '#1c1c1cff',
-    noiseIntensity: 0.8,
+    noiseTint: '#860466ff',
+    noiseIntensity: 0.4,
   },
   {
     name: 'Night',
@@ -496,7 +496,7 @@ export default function FantasyBackground({
       for (let i = 0; i < data.length; i += 4) {
         const v = Math.floor(Math.random() * noiseIntensity * 360)
         data[i] = data[i + 1] = data[i + 2] = v
-        data[i + 3] = darkMode ? 20 : 20 // Less intense noise in light mode
+        data[i + 3] = darkMode ? 20 : 15 // Less intense noise in light mode
       }
 
       ctx.putImageData(imageData, 0, 0)
@@ -605,14 +605,14 @@ export default function FantasyBackground({
               style={{
                 color: color,
                 width: '30rem',
-                filter: `blur(${darkMode ? 6 : 5}rem)`,
+                filter: `blur(${darkMode ? 6 : 7}rem)`,
                 position: 'absolute',
-                mixBlendMode: 'color-dodge',
+                mixBlendMode: darkMode ? 'color-dodge' : 'soft-light',
                 top: `${framePositions[idx]?.y || (isFirst ? 20 : 60)}%`,
                 left: `${framePositions[idx]?.x || (isFirst ? 30 : 70)}%`,
                 transform: 'translate(-50%, -50%)',
                 zIndex: -2,
-                opacity: darkMode ? 1 : 0.7,
+                opacity: darkMode ? 1 : 0.8,
                 transition: 'opacity 0.5s ease-in-out',
               }}
             >
