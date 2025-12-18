@@ -39,7 +39,11 @@ export const VideoApp: React.FC<VideoAppProps> = ({ videos }) => {
         </div>
       </aside>
       <main className={styles.main}>
-        <VideoPlayer videoUrl={currentVideo.url} videoType={currentVideo.type} />
+        <VideoPlayer
+          videoUrl={currentVideo.url}
+          videoType={currentVideo.type}
+          videoPoster={currentVideo.thumbnail}
+        />
       </main>
     </div>
   )

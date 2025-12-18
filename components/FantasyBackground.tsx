@@ -630,6 +630,7 @@ export default function FantasyBackground({
           inset: 0,
           width: '100%',
           height: '100%',
+          mixBlendMode: 'exclusion',
           pointerEvents: 'none',
           display: 'block',
           zIndex: -1,

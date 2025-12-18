@@ -22,10 +22,10 @@ export const VideoMenu: React.FC<VideoMenuProps> = ({ videos, onVideoSelect, cur
     ? videos
     : [videos[safeActiveIndex], ...videos.filter((_, i) => i !== safeActiveIndex)]
 
-  const itemHeight = 3.75 // rem
-  const containerPadding = 0 // rem
-  const minimalHeight = `${itemHeight + containerPadding * 1.5}rem`
-  const expandedHeight = `${videos.length * itemHeight + containerPadding * 1}rem`
+  const itemHeight = 3 // rem
+  const containerPadding = 0.5 // rem
+  const minimalHeight = `${itemHeight + containerPadding * 0.5}rem`
+  const expandedHeight = `${videos.length * itemHeight + containerPadding * 0.5}rem`
 
   return (
     <div
