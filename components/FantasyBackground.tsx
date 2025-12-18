@@ -67,7 +67,7 @@ const lightThemes: Theme[] = [
     name: 'Afternoon Light',
     gradientColors: ['#f3c33dff', '#EC3537', '#FFEF99'],
     noiseTint: '#1c1c1c33',
-    noiseIntensity: 0.6,
+    noiseIntensity: 0.8,
   },
   {
     name: 'Sunset Light',
@@ -496,7 +496,7 @@ export default function FantasyBackground({
       for (let i = 0; i < data.length; i += 4) {
         const v = Math.floor(Math.random() * noiseIntensity * 360)
         data[i] = data[i + 1] = data[i + 2] = v
-        data[i + 3] = darkMode ? 20 : 10 // Less intense noise in light mode
+        data[i + 3] = darkMode ? 20 : 20 // Less intense noise in light mode
       }
 
       ctx.putImageData(imageData, 0, 0)
