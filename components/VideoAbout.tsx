@@ -27,11 +27,13 @@ export const VideoApp: React.FC<VideoAppProps> = ({ videos }) => {
               Founded by two friends, united in the crucible of start-ups and tabletop roleplaying.
             </p>
           </ScrollFade>
-          <VideoMenu
-            videos={videos}
-            onVideoSelect={setCurrentVideo}
-            currentVideoId={currentVideo.id}
-          />
+          <ScrollFade>
+            <VideoMenu
+              videos={videos}
+              onVideoSelect={setCurrentVideo}
+              currentVideoId={currentVideo.id}
+            />
+          </ScrollFade>
         </div>
         <div>
           <ScrollFade>
@@ -40,7 +42,7 @@ export const VideoApp: React.FC<VideoAppProps> = ({ videos }) => {
         </div>
       </aside>
       <main className={styles.main}>
-        <VideoPlayer videoUrl={currentVideo.url} />
+        <VideoPlayer videoUrl={currentVideo.url} videoType={currentVideo.type} />
       </main>
     </div>
   )

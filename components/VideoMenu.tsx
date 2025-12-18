@@ -1,13 +1,7 @@
 'use client'
 import React, { useState, useRef } from 'react'
 import styles from './style/videoplayer.module.css'
-
-interface Video {
-  id: number
-  title: string
-  url: string
-  thumbnail: string
-}
+import { Video } from './types'
 
 interface VideoMenuProps {
   videos: Video[]

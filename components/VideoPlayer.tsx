@@ -1,25 +1,342 @@
-import React from 'react'
+'use client'
+import React, { useState, useRef, useEffect } from 'react'
 import styles from './style/videoplayer.module.css'
 import TVOutArea from './svgs/tv-outer'
 import TVInArea from './svgs/tv-inner'
 
+type VideoType = 'youtube' | 'vimeo' | 'direct'
+
 interface VideoPlayerProps {
   videoUrl: string
+  videoType: VideoType
 }
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType }) => {
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [volume, setVolume] = useState(1)
+  const [isMuted, setIsMuted] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const youtubePlayerRef = useRef<any>(null)
+  const vimeoPlayerRef = useRef<any>(null)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    setIsPlaying(false)
+    setCurrentTime(0)
+    setDuration(0)
+  }, [videoUrl])
+
+  // Initialize YouTube Player API
+  useEffect(() => {
+    if (videoType === 'youtube') {
+      const loadYouTubeAPI = () => {
+        if (typeof window !== 'undefined' && (window as any).YT && (window as any).YT.Player) {
+          initializeYouTubePlayer()
+        } else {
+          if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
+            const tag = document.createElement('script')
+            tag.src = 'https://www.youtube.com/iframe_api'
+            const firstScriptTag = document.getElementsByTagName('script')[0]
+            firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
+          }
+          ;(window as any).onYouTubeIframeAPIReady = initializeYouTubePlayer
+        }
+      }
+
+      const initializeYouTubePlayer = () => {
+        // Wait for iframe to be ready
+        const checkIframe = setInterval(() => {
+          if (iframeRef.current && iframeRef.current.contentWindow) {
+            clearInterval(checkIframe)
+
+            youtubePlayerRef.current = new (window as any).YT.Player(iframeRef.current, {
+              events: {
+                onReady: (event: any) => {
+                  setDuration(event.target.getDuration())
+                  startTimeTracking('youtube')
+                },
+                onStateChange: (event: any) => {
+                  if (event.data === (window as any).YT.PlayerState.PLAYING) {
+                    setIsPlaying(true)
+                  } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
+                    setIsPlaying(false)
+                  }
+                },
+              },
+            })
+          }
+        }, 100)
+
+        // Clear interval after 5 seconds to prevent memory leak
+        setTimeout(() => clearInterval(checkIframe), 5000)
+      }
+
+      loadYouTubeAPI()
+
+      return () => {
+        if (intervalRef.current) clearInterval(intervalRef.current)
+        youtubePlayerRef.current = null
+      }
+    }
+  }, [videoType, videoUrl])
+
+  // Initialize Vimeo Player
+  useEffect(() => {
+    if (videoType === 'vimeo' && iframeRef.current) {
+      const script = document.createElement('script')
+      script.src = 'https://player.vimeo.com/api/player.js'
+      script.onload = () => {
+        const Player = (window as any).Vimeo.Player
+        vimeoPlayerRef.current = new Player(iframeRef.current)
+
+        vimeoPlayerRef.current.getDuration().then((dur: number) => {
+          setDuration(dur)
+        })
+
+        vimeoPlayerRef.current.on('play', () => setIsPlaying(true))
+        vimeoPlayerRef.current.on('pause', () => setIsPlaying(false))
+
+        startTimeTracking('vimeo')
+      }
+
+      if (!document.querySelector('script[src="https://player.vimeo.com/api/player.js"]')) {
+        document.head.appendChild(script)
+      } else {
+        const Player = (window as any).Vimeo.Player
+        vimeoPlayerRef.current = new Player(iframeRef.current)
+
+        vimeoPlayerRef.current.getDuration().then((dur: number) => {
+          setDuration(dur)
+        })
+
+        vimeoPlayerRef.current.on('play', () => setIsPlaying(true))
+        vimeoPlayerRef.current.on('pause', () => setIsPlaying(false))
+
+        startTimeTracking('vimeo')
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [videoType, videoUrl])
+
+  const startTimeTracking = (type: 'youtube' | 'vimeo') => {
+    if (intervalRef.current) clearInterval(intervalRef.current)
+
+    intervalRef.current = setInterval(() => {
+      if (type === 'youtube' && youtubePlayerRef.current) {
+        // YouTube API returns time directly, not a Promise
+        const time = youtubePlayerRef.current.getCurrentTime()
+        setCurrentTime(time)
+      } else if (type === 'vimeo' && vimeoPlayerRef.current) {
+        // Vimeo API returns a Promise
+        vimeoPlayerRef.current.getCurrentTime().then((time: number) => {
+          setCurrentTime(time)
+        })
+      }
+    }, 100)
+  }
+
+  const handlePlayPause = () => {
+    if (videoType === 'direct' && videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause()
+      } else {
+        videoRef.current.play()
+      }
+      setIsPlaying(!isPlaying)
+    } else if (videoType === 'youtube' && youtubePlayerRef.current) {
+      if (isPlaying) {
+        youtubePlayerRef.current.pauseVideo()
+      } else {
+        youtubePlayerRef.current.playVideo()
+      }
+      setIsPlaying(!isPlaying)
+    } else if (videoType === 'vimeo' && vimeoPlayerRef.current) {
+      if (isPlaying) {
+        vimeoPlayerRef.current.pause()
+      } else {
+        vimeoPlayerRef.current.play()
+      }
+      setIsPlaying(!isPlaying)
+    }
+  }
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      setCurrentTime(videoRef.current.currentTime)
+    }
+  }
+
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      setDuration(videoRef.current.duration)
+    }
+  }
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = parseFloat(e.target.value)
+    setCurrentTime(newTime)
+
+    if (videoType === 'direct' && videoRef.current) {
+      videoRef.current.currentTime = newTime
+    } else if (videoType === 'youtube' && youtubePlayerRef.current) {
+      youtubePlayerRef.current.seekTo(newTime, true)
+    } else if (videoType === 'vimeo' && vimeoPlayerRef.current) {
+      vimeoPlayerRef.current.setCurrentTime(newTime)
+    }
+  }
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value)
+    setVolume(newVolume)
+    setIsMuted(newVolume === 0)
+
+    if (videoType === 'direct' && videoRef.current) {
+      videoRef.current.volume = newVolume
+    } else if (videoType === 'youtube' && youtubePlayerRef.current) {
+      youtubePlayerRef.current.setVolume(newVolume * 100)
+      if (newVolume === 0) {
+        youtubePlayerRef.current.mute()
+      } else {
+        youtubePlayerRef.current.unMute()
+      }
+    } else if (videoType === 'vimeo' && vimeoPlayerRef.current) {
+      vimeoPlayerRef.current.setVolume(newVolume)
+    }
+  }
+
+  const toggleMute = () => {
+    const newMutedState = !isMuted
+    setIsMuted(newMutedState)
+
+    if (videoType === 'direct' && videoRef.current) {
+      videoRef.current.muted = newMutedState
+    } else if (videoType === 'youtube' && youtubePlayerRef.current) {
+      if (newMutedState) {
+        youtubePlayerRef.current.mute()
+      } else {
+        youtubePlayerRef.current.unMute()
+      }
+    } else if (videoType === 'vimeo' && vimeoPlayerRef.current) {
+      vimeoPlayerRef.current.setVolume(newMutedState ? 0 : volume)
+    }
+  }
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = Math.floor(seconds % 60)
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
+
+  const renderVideo = () => {
+    switch (videoType) {
+      case 'youtube':
+        const youtubeId = extractYouTubeId(videoUrl)
+        return (
+          <iframe
+            ref={iframeRef}
+            className={styles.video}
+            src={`https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&controls=0&modestbranding=1&rel=0`}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        )
+
+      case 'vimeo':
+        const vimeoId = extractVimeoId(videoUrl)
+        return (
+          <iframe
+            ref={iframeRef}
+            className={styles.video}
+            src={`https://player.vimeo.com/video/${vimeoId}?controls=0`}
+            title="Vimeo video player"
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+          />
+        )
+
+      case 'direct':
+      default:
+        return (
+          <video
+            ref={videoRef}
+            key={videoUrl}
+            className={styles.video}
+            onTimeUpdate={handleTimeUpdate}
+            onLoadedMetadata={handleLoadedMetadata}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+          >
+            <source src={videoUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )
+    }
+  }
+
   return (
     <div className={styles.outerArea}>
       <TVOutArea />
       <div className={styles.innerArea}>
         <TVInArea />
         <div className={styles.videoPlayerWrapper}>
-          <video key={videoUrl} className={styles.video} controls muted autoPlay loop>
-            <source src={videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          {renderVideo()}
+          <div className={styles.controls}>
+            <button className={styles.playButton} onClick={handlePlayPause}>
+              {isPlaying ? '⏸' : '▶'}
+            </button>
+
+            <span className={styles.time}>{formatTime(currentTime)}</span>
+
+            <input
+              type="range"
+              className={styles.seekBar}
+              min="0"
+              max={duration || 0}
+              value={currentTime}
+              onChange={handleSeek}
+            />
+
+            <span className={styles.time}>{formatTime(duration)}</span>
+
+            <button className={styles.volumeButton} onClick={toggleMute}>
+              {isMuted ? '🔇' : '🔊'}
+            </button>
+
+            <input
+              type="range"
+              className={styles.volumeBar}
+              min="0"
+              max="1"
+              step="0.1"
+              value={isMuted ? 0 : volume}
+              onChange={handleVolumeChange}
+            />
+          </div>
         </div>
       </div>
     </div>
   )
+}
+
+// Helper function to extract YouTube video ID
+function extractYouTubeId(url: string): string {
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
+  const match = url.match(regExp)
+  return match && match[7].length === 11 ? match[7] : url
+}
+
+// Helper function to extract Vimeo video ID
+function extractVimeoId(url: string): string {
+  const regExp = /vimeo.*\/(\d+)/i
+  const match = url.match(regExp)
+  return match ? match[1] : url
 }

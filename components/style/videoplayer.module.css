@@ -64,16 +64,22 @@ display: grid;
 
 .outerArea {
     width: 100%;
-    padding: 2rem;
+    height: 100%;
+    padding: 2rem 2.5rem;
     /* background: url('/svg/tv-outerarea.svg');
     background-size: contain; */
     position: relative;
     mix-blend-mode: multiply;
+    display: flex;
+    place-items: center center;
 }
 .innerArea {
   position: relative;
   width: 100%;
-  padding: 1rem;
+  padding: 1.5rem 1rem;
+  height: 100%;
+  display: flex;
+  place-items: center center;
 }
 
 .svgBackOut, .svgBackIn {
@@ -81,30 +87,136 @@ display: grid;
   top:0;
   left: 0;
   width: 100%;
+  height: 100%;
   z-index: 0;
 }
 
-.svgBackOut {
-  mix-blend-mode: multiply;
-}
-
 .videoPlayerWrapper {
-  -webkit-mask-image: url('/svg/tv-visualarea.svg');
+  width: 100%;
+  aspect-ratio: 16/9;
   mask-image: url('/svg/tv-visualarea.svg');
   mask-repeat: no-repeat;
+  mask-position: center;
   mask-size: contain;
+  padding: 0.5rem;
+  position: relative;
+}
+
+.videoPlayerWrapper .video{
   width: 100%;
   height: 100%;
+  position: relative;
+  display: flex;
+  z-index: 5;
+  /* border-radius: 2rem; */
+}
+
+.controls {
+  position: absolute;
+  bottom: 1rem;
+  left: 2rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1.5rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+  backdrop-filter: blur(16px);
+  border-radius: 4rem;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.videoPlayerWrapper:hover .controls {
+  opacity: 1;
+}
+
+.playButton,
+.volumeButton {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: transform 0.2s;
+}
+
+.playButton:hover,
+.volumeButton:hover {
+  transform: scale(1.05);
+}
+
+.time {
+  color: white;
+  font-size: 0.75rem;
+  font-family: monospace;
+  min-width: 2rem;
+  text-align: center;
+}
+
+.seekBar {
+  flex: 1;
+  height: 0.25rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 100rem;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.seekBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.seekBar::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.volumeBar {
+  width: 80px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.volumeBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.volumeBar::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
 }
 
 
-.innerArea video {
-    width: 100%;
-    height: 100%;
-    transform: scale(1.1);
-    position: relative;
-    z-index: 5;
-}
 
 /* Video Menu */
 
