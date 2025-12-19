@@ -29,10 +29,15 @@ export const VHSEffect: React.FC = () => {
     const updateSize = () => {
       const parent = canvas.parentElement
       if (parent) {
-        canvas.width = parent.clientWidth
-        canvas.height = parent.clientHeight
-        snowCanvas.width = parent.clientWidth / 2
-        snowCanvas.height = parent.clientHeight / 2
+        const width = parent.clientWidth
+        const height = parent.clientHeight
+
+        if (width > 0 && height > 0) {
+          canvas.width = width
+          canvas.height = height
+          snowCanvas.width = width / 2
+          snowCanvas.height = height / 2
+        }
       }
     }
 
@@ -43,6 +48,9 @@ export const VHSEffect: React.FC = () => {
     const renderTrackingNoise = () => {
       const width = canvas.width
       const height = canvas.height
+
+      if (width === 0 || height === 0) return
+
       const radius = 2
       const num = 20
       let posy1 = 0
@@ -74,6 +82,9 @@ export const VHSEffect: React.FC = () => {
     const generateSnow = () => {
       const w = snowCanvas.width
       const h = snowCanvas.height
+
+      if (w === 0 || h === 0) return
+
       const imageData = snowCtx.createImageData(w, h)
       const buffer = new Uint32Array(imageData.data.buffer)
       const len = buffer.length
@@ -91,13 +102,17 @@ export const VHSEffect: React.FC = () => {
       animationFrameRef.current = requestAnimationFrame(animateSnow)
     }
 
-    // Start VCR noise at 30 fps
-    intervalRef.current = setInterval(renderTrackingNoise, 1000 / 30)
+    // Wait a bit for dimensions to be set before starting animations
+    const startAnimations = setTimeout(() => {
+      // Start VCR noise at 30 fps
+      intervalRef.current = setInterval(renderTrackingNoise, 1000 / 30)
 
-    // Start snow animation
-    animateSnow()
+      // Start snow animation
+      animateSnow()
+    }, 100)
 
     return () => {
+      clearTimeout(startAnimations)
       window.removeEventListener('resize', updateSize)
       if (intervalRef.current) clearInterval(intervalRef.current)
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current)
