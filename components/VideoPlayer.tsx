@@ -12,10 +12,10 @@ type VideoType = 'youtube' | 'vimeo' | 'direct'
 interface VideoPlayerProps {
   videoUrl: string
   videoType: VideoType
-  VideoPoster: string
+  videoPoster: string
 }
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, VideoPoster }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, videoPoster }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -341,7 +341,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, V
           <video
             ref={videoRef}
             key={videoUrl}
-            poster={VideoPoster}
+            poster={videoPoster}
             className={styles.video}
             onTimeUpdate={handleTimeUpdate}
             onLoadedMetadata={handleLoadedMetadata}
