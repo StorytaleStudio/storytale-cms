@@ -51,7 +51,7 @@ export const VHSEffect: React.FC = () => {
 
       if (width === 0 || height === 0) return
 
-      const radius = 2
+      const radius = 1
       const num = 20
       let posy1 = 0
       const posy2 = height
@@ -71,8 +71,8 @@ export const VHSEffect: React.FC = () => {
 
         // Add tail effect
         const tail = 10
-        ctx.fillRect(x + radius, y1, tail, radius / 2)
-        ctx.fillRect(x + radius, y2, tail, radius / 2)
+        ctx.fillRect(x + radius, y1, tail, radius / 5)
+        ctx.fillRect(x + radius, y2, tail, radius / 5)
       }
 
       ctx.closePath()
