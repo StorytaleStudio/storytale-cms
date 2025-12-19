@@ -54,7 +54,7 @@ export const VideoMenu: React.FC<VideoMenuProps> = ({ videos, onVideoSelect, cur
               opacity: showItem ? 1 : 0,
               transform: showItem ? 'translateY(0)' : 'translateY(0.625rem)',
               transition: `opacity 0.4s ease ${isActive ? '0s' : '0.4s'}, transform 0.4s ease ${isActive ? '0s' : '0.6s'}`,
-              fontWeight: isActive ? '600' : 'normal',
+              fontWeight: isActive ? '700' : '500',
             }}
           >
             {isActive && (

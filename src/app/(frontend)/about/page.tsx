@@ -28,7 +28,7 @@ const videos: Video[] = [
   },
   {
     id: 4,
-    title: 'Storytelling',
+    title: 'The Story',
     url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     description: `<p>This is a direct video for when you have the mp4 ready</p>`,
     thumbnail: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=300&h=200&fit=crop',
@@ -36,7 +36,7 @@ const videos: Video[] = [
   },
   {
     id: 5,
-    title: 'Legends',
+    title: 'The Legends',
     url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     description: `<p>This is a direct video for when you have the mp4 ready</p>`,
     thumbnail: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=300&h=200&fit=crop',
@@ -44,7 +44,7 @@ const videos: Video[] = [
   },
   {
     id: 6,
-    title: 'Getting Started',
+    title: 'The Beginning',
     url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     description: `<p>This is a direct video for when you have the mp4 ready</p>`,
     thumbnail: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=300&h=200&fit=crop',

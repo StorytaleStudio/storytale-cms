@@ -5,16 +5,16 @@ import TVOutArea from './svgs/tv-outer'
 import TVInArea from './svgs/tv-inner'
 import VolcumeIcon from './svgs/volume-icon'
 import MuteIcon from './svgs/mute-icon'
+import { VHSEffect } from './VHSEffect'
 
 type VideoType = 'youtube' | 'vimeo' | 'direct'
 
 interface VideoPlayerProps {
   videoUrl: string
   videoType: VideoType
-  videoPoster: string
 }
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, videoPoster }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -35,6 +35,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, v
   // Initialize YouTube Player API
   useEffect(() => {
     if (videoType === 'youtube') {
+      // Clear any existing interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+
       const loadYouTubeAPI = () => {
         if (typeof window !== 'undefined' && (window as any).YT && (window as any).YT.Player) {
           initializeYouTubePlayer()
@@ -51,36 +57,59 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, v
 
       const initializeYouTubePlayer = () => {
         // Wait for iframe to be ready
+        let attempts = 0
+        const maxAttempts = 50
+
         const checkIframe = setInterval(() => {
+          attempts++
+
           if (iframeRef.current && iframeRef.current.contentWindow) {
             clearInterval(checkIframe)
 
-            youtubePlayerRef.current = new (window as any).YT.Player(iframeRef.current, {
-              events: {
-                onReady: (event: any) => {
-                  setDuration(event.target.getDuration())
-                  startTimeTracking('youtube')
+            try {
+              youtubePlayerRef.current = new (window as any).YT.Player(iframeRef.current, {
+                events: {
+                  onReady: (event: any) => {
+                    try {
+                      const dur = event.target.getDuration()
+                      if (typeof dur === 'number' && !isNaN(dur)) {
+                        setDuration(dur)
+                      }
+                      startTimeTracking('youtube')
+                    } catch (error) {
+                      console.error('YouTube onReady error:', error)
+                    }
+                  },
+                  onStateChange: (event: any) => {
+                    try {
+                      if (event.data === (window as any).YT.PlayerState.PLAYING) {
+                        setIsPlaying(true)
+                      } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
+                        setIsPlaying(false)
+                      }
+                    } catch (error) {
+                      console.error('YouTube onStateChange error:', error)
+                    }
+                  },
                 },
-                onStateChange: (event: any) => {
-                  if (event.data === (window as any).YT.PlayerState.PLAYING) {
-                    setIsPlaying(true)
-                  } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
-                    setIsPlaying(false)
-                  }
-                },
-              },
-            })
+              })
+            } catch (error) {
+              console.error('YouTube player initialization error:', error)
+            }
+          } else if (attempts >= maxAttempts) {
+            clearInterval(checkIframe)
+            console.error('YouTube iframe failed to load')
           }
         }, 100)
-
-        // Clear interval after 5 seconds to prevent memory leak
-        setTimeout(() => clearInterval(checkIframe), 5000)
       }
 
       loadYouTubeAPI()
 
       return () => {
-        if (intervalRef.current) clearInterval(intervalRef.current)
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current)
+          intervalRef.current = null
+        }
         youtubePlayerRef.current = null
       }
     }
@@ -131,15 +160,25 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, v
     if (intervalRef.current) clearInterval(intervalRef.current)
 
     intervalRef.current = setInterval(() => {
-      if (type === 'youtube' && youtubePlayerRef.current) {
-        // YouTube API returns time directly, not a Promise
-        const time = youtubePlayerRef.current.getCurrentTime()
-        setCurrentTime(time)
-      } else if (type === 'vimeo' && vimeoPlayerRef.current) {
-        // Vimeo API returns a Promise
-        vimeoPlayerRef.current.getCurrentTime().then((time: number) => {
-          setCurrentTime(time)
-        })
+      try {
+        if (
+          type === 'youtube' &&
+          youtubePlayerRef.current &&
+          typeof youtubePlayerRef.current.getCurrentTime === 'function'
+        ) {
+          // YouTube API returns time directly, not a Promise
+          const time = youtubePlayerRef.current.getCurrentTime()
+          if (typeof time === 'number' && !isNaN(time)) {
+            setCurrentTime(time)
+          }
+        } else if (type === 'vimeo' && vimeoPlayerRef.current) {
+          // Vimeo API returns a Promise
+          vimeoPlayerRef.current.getCurrentTime().then((time: number) => {
+            setCurrentTime(time)
+          })
+        }
+      } catch (error) {
+        console.error('Time tracking error:', error)
       }
     }, 100)
   }
@@ -153,12 +192,16 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, v
       }
       setIsPlaying(!isPlaying)
     } else if (videoType === 'youtube' && youtubePlayerRef.current) {
-      if (isPlaying) {
-        youtubePlayerRef.current.pauseVideo()
-      } else {
-        youtubePlayerRef.current.playVideo()
+      try {
+        if (isPlaying) {
+          youtubePlayerRef.current.pauseVideo()
+        } else {
+          youtubePlayerRef.current.playVideo()
+        }
+        setIsPlaying(!isPlaying)
+      } catch (error) {
+        console.error('YouTube player error:', error)
       }
-      setIsPlaying(!isPlaying)
     } else if (videoType === 'vimeo' && vimeoPlayerRef.current) {
       if (isPlaying) {
         vimeoPlayerRef.current.pause()
@@ -185,12 +228,20 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, v
     const newTime = parseFloat(e.target.value)
     setCurrentTime(newTime)
 
-    if (videoType === 'direct' && videoRef.current) {
-      videoRef.current.currentTime = newTime
-    } else if (videoType === 'youtube' && youtubePlayerRef.current) {
-      youtubePlayerRef.current.seekTo(newTime, true)
-    } else if (videoType === 'vimeo' && vimeoPlayerRef.current) {
-      vimeoPlayerRef.current.setCurrentTime(newTime)
+    try {
+      if (videoType === 'direct' && videoRef.current) {
+        videoRef.current.currentTime = newTime
+      } else if (
+        videoType === 'youtube' &&
+        youtubePlayerRef.current &&
+        typeof youtubePlayerRef.current.seekTo === 'function'
+      ) {
+        youtubePlayerRef.current.seekTo(newTime, true)
+      } else if (videoType === 'vimeo' && vimeoPlayerRef.current) {
+        vimeoPlayerRef.current.setCurrentTime(newTime)
+      }
+    } catch (error) {
+      console.error('Seek error:', error)
     }
   }
 
@@ -199,17 +250,25 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, v
     setVolume(newVolume)
     setIsMuted(newVolume === 0)
 
-    if (videoType === 'direct' && videoRef.current) {
-      videoRef.current.volume = newVolume
-    } else if (videoType === 'youtube' && youtubePlayerRef.current) {
-      youtubePlayerRef.current.setVolume(newVolume * 100)
-      if (newVolume === 0) {
-        youtubePlayerRef.current.mute()
-      } else {
-        youtubePlayerRef.current.unMute()
+    try {
+      if (videoType === 'direct' && videoRef.current) {
+        videoRef.current.volume = newVolume
+      } else if (
+        videoType === 'youtube' &&
+        youtubePlayerRef.current &&
+        typeof youtubePlayerRef.current.setVolume === 'function'
+      ) {
+        youtubePlayerRef.current.setVolume(newVolume * 100)
+        if (newVolume === 0) {
+          youtubePlayerRef.current.mute()
+        } else {
+          youtubePlayerRef.current.unMute()
+        }
+      } else if (videoType === 'vimeo' && vimeoPlayerRef.current) {
+        vimeoPlayerRef.current.setVolume(newVolume)
       }
-    } else if (videoType === 'vimeo' && vimeoPlayerRef.current) {
-      vimeoPlayerRef.current.setVolume(newVolume)
+    } catch (error) {
+      console.error('Volume change error:', error)
     }
   }
 
@@ -217,16 +276,25 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, v
     const newMutedState = !isMuted
     setIsMuted(newMutedState)
 
-    if (videoType === 'direct' && videoRef.current) {
-      videoRef.current.muted = newMutedState
-    } else if (videoType === 'youtube' && youtubePlayerRef.current) {
-      if (newMutedState) {
-        youtubePlayerRef.current.mute()
-      } else {
-        youtubePlayerRef.current.unMute()
+    try {
+      if (videoType === 'direct' && videoRef.current) {
+        videoRef.current.muted = newMutedState
+      } else if (videoType === 'youtube' && youtubePlayerRef.current) {
+        if (
+          typeof youtubePlayerRef.current.mute === 'function' &&
+          typeof youtubePlayerRef.current.unMute === 'function'
+        ) {
+          if (newMutedState) {
+            youtubePlayerRef.current.mute()
+          } else {
+            youtubePlayerRef.current.unMute()
+          }
+        }
+      } else if (videoType === 'vimeo' && vimeoPlayerRef.current) {
+        vimeoPlayerRef.current.setVolume(newMutedState ? 0 : volume)
       }
-    } else if (videoType === 'vimeo' && vimeoPlayerRef.current) {
-      vimeoPlayerRef.current.setVolume(newMutedState ? 0 : volume)
+    } catch (error) {
+      console.error('Mute toggle error:', error)
     }
   }
 
@@ -273,7 +341,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, v
             ref={videoRef}
             key={videoUrl}
             className={styles.video}
-            poster={videoPoster}
             onTimeUpdate={handleTimeUpdate}
             onLoadedMetadata={handleLoadedMetadata}
             onPlay={() => setIsPlaying(true)}
@@ -293,6 +360,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, videoType, v
         <TVInArea />
         <div className={styles.videoPlayerWrapper}>
           {renderVideo()}
+          <VHSEffect />
           <div className={styles.controls}>
             <button className={styles.playButton} onClick={handlePlayPause}>
               {isPlaying ? '⏸' : '▶'}
