@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import styles from './style/VHSEffect.module.css'
 
 function getRandomInt(min: number, max: number): number {
@@ -11,8 +11,8 @@ function getRandomInt(min: number, max: number): number {
 export const VHSEffect: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const snowCanvasRef = useRef<HTMLCanvasElement>(null)
-  const animationFrameRef = useRef<number>()
-  const intervalRef = useRef<NodeJS.Timeout>()
+  const animationFrameRef = useRef<number | undefined>(undefined)
+  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -44,13 +44,13 @@ export const VHSEffect: React.FC = () => {
       const width = canvas.width
       const height = canvas.height
       const radius = 2
-      const num = 24
+      const num = 20
       let posy1 = 0
       const posy2 = height
       let posy3 = 0
 
       ctx.clearRect(0, 0, width, height)
-      ctx.fillStyle = '#eeecdbff'
+      ctx.fillStyle = '#fff'
       ctx.beginPath()
 
       for (let i = 0; i <= num; i++) {
@@ -91,8 +91,8 @@ export const VHSEffect: React.FC = () => {
       animationFrameRef.current = requestAnimationFrame(animateSnow)
     }
 
-    // Start VCR noise at 24 fps
-    intervalRef.current = setInterval(renderTrackingNoise, 1000 / 24)
+    // Start VCR noise at 30 fps
+    intervalRef.current = setInterval(renderTrackingNoise, 1000 / 30)
 
     // Start snow animation
     animateSnow()
@@ -105,13 +105,11 @@ export const VHSEffect: React.FC = () => {
   }, [])
 
   return (
-    <>
-      <div className={styles.screenWrapper}>
-        <canvas ref={snowCanvasRef} className={styles.snow} />
-        <canvas ref={canvasRef} className={styles.vcr} />
-        <div className={styles.scanlines} />
-        <div className={styles.vignette} />
-      </div>
-    </>
+    <div className={styles.vhsWrapper}>
+      <canvas ref={snowCanvasRef} className={styles.snow} />
+      <canvas ref={canvasRef} className={styles.vcr} />
+      <div className={styles.scanlines} />
+      <div className={styles.vignette} />
+    </div>
   )
 }
