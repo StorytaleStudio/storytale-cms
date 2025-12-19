@@ -23,7 +23,8 @@ const videos: Video[] = [
     title: 'The Process',
     url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     description: `<p>This is a direct video for when you have the mp4 ready</p>`,
-    thumbnail: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=300&h=200&fit=crop',
+    thumbnail:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/SMPTE_Color_Bars_16x9.svg/1024px-SMPTE_Color_Bars_16x9.svg.png',
     type: 'direct',
   },
   {
@@ -31,7 +32,8 @@ const videos: Video[] = [
     title: 'The Story',
     url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     description: `<p>This is a direct video for when you have the mp4 ready</p>`,
-    thumbnail: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=300&h=200&fit=crop',
+    thumbnail:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/SMPTE_Color_Bars_16x9.svg/1024px-SMPTE_Color_Bars_16x9.svg.png',
     type: 'direct',
   },
   {
@@ -39,7 +41,8 @@ const videos: Video[] = [
     title: 'The Legends',
     url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     description: `<p>This is a direct video for when you have the mp4 ready</p>`,
-    thumbnail: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=300&h=200&fit=crop',
+    thumbnail:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/SMPTE_Color_Bars_16x9.svg/1024px-SMPTE_Color_Bars_16x9.svg.png',
     type: 'direct',
   },
   {
@@ -47,7 +50,8 @@ const videos: Video[] = [
     title: 'The Beginning',
     url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     description: `<p>This is a direct video for when you have the mp4 ready</p>`,
-    thumbnail: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=300&h=200&fit=crop',
+    thumbnail:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/SMPTE_Color_Bars_16x9.svg/1024px-SMPTE_Color_Bars_16x9.svg.png',
     type: 'direct',
   },
 ]
