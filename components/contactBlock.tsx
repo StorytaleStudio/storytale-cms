@@ -1,35 +1,50 @@
-"use client";
+'use client'
 
-import { useState } from 'react';
+import { useState } from 'react'
 
 interface ContactItem {
-  label: string;
-  user: string;
-  domain: string;
+  label: string
+  user?: string
+  domain?: string
+  socialLinks?: {
+    platform: string
+    url: string
+  }[]
 }
 
 const ContactAccordion = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const contacts: ContactItem[] = [
     { label: 'Talk', user: 'hello', domain: 'storytale.studio' },
+    {
+      label: 'Stalk',
+      socialLinks: [
+        { platform: 'LinkedIn', url: 'https://www.linkedin.com/company/storytale-studio' },
+        { platform: 'Instagram', url: 'https://www.instagram.com/storytale.studio' },
+      ],
+    },
     { label: 'New Business', user: 'legend', domain: 'storytale.studio' },
-    { label: 'Media', user: 'media', domain: 'storytale.studio' }
-  ];
+    { label: 'Media', user: 'media', domain: 'storytale.studio' },
+  ]
 
   const constructEmail = (user: string, domain: string): string => {
-    return `${user}@${domain}`;
-  };
+    return `${user}@${domain}`
+  }
 
-  const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>, user: string, domain: string) => {
-    e.preventDefault();
-    const email = constructEmail(user, domain);
-    window.location.href = `mailto:${email}`;
-  };
+  const handleEmailClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    user: string,
+    domain: string,
+  ) => {
+    e.preventDefault()
+    const email = constructEmail(user, domain)
+    window.location.href = `mailto:${email}`
+  }
 
   const toggleAccordion = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+    setOpenIndex(openIndex === index ? null : index)
+  }
 
   return (
     <>
@@ -117,6 +132,12 @@ const ContactAccordion = () => {
           color: white;
           text-decoration: underline;
         }
+
+        .social-links {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
       `}</style>
 
       <div className="accordion-container">
@@ -127,9 +148,7 @@ const ContactAccordion = () => {
               className="accordion-button"
               aria-expanded={openIndex === index}
             >
-              <span className="accordion-label">
-                {contact.label}
-              </span>
+              <span className="accordion-label">{contact.label}</span>
               <svg
                 className={`accordion-icon ${openIndex === index ? 'open' : ''}`}
                 fill="none"
@@ -144,25 +163,41 @@ const ContactAccordion = () => {
                 />
               </svg>
             </button>
-            
+
             <div className={`accordion-content ${openIndex === index ? 'open' : 'closed'}`}>
               <div className="accordion-content-inner">
-                <a
-                  href="#"
-                  onClick={(e) => handleEmailClick(e, contact.user, contact.domain)}
-                  className="accordion-link"
-                  data-user={btoa(contact.user)}
-                  data-domain={btoa(contact.domain)}
-                >
-                  {constructEmail(contact.user, contact.domain)}
-                </a>
+                {contact.socialLinks ? (
+                  <div className="social-links">
+                    {contact.socialLinks.map((link, linkIndex) => (
+                      <a
+                        key={linkIndex}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="accordion-link"
+                      >
+                        {link.platform}
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <a
+                    href="#"
+                    onClick={(e) => handleEmailClick(e, contact.user!, contact.domain!)}
+                    className="accordion-link"
+                    data-user={btoa(contact.user!)}
+                    data-domain={btoa(contact.domain!)}
+                  >
+                    {constructEmail(contact.user!, contact.domain!)}
+                  </a>
+                )}
               </div>
             </div>
           </div>
         ))}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ContactAccordion;
+export default ContactAccordion
