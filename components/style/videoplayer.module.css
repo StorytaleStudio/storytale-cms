@@ -114,7 +114,7 @@ display: grid;
   position: relative;
   display: flex;
   z-index: 2;
-  filter: contrast(1.1) brightness(0.95);
+  filter: contrast(1.2) brightness(0.95) saturate(1.05) hue-rotate(15deg);
   background: rgb(177, 177, 177);
   /* mix-blend-mode: lighten; */
   /* filter: blur(1px); */
