@@ -58,7 +58,7 @@ export const VHSEffect: React.FC = () => {
       let posy3 = 0
 
       ctx.clearRect(0, 0, width, height)
-      ctx.fillStyle = '#fff'
+      ctx.fillStyle = '#000'
       ctx.beginPath()
 
       for (let i = 0; i <= num; i++) {

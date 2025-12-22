@@ -1,6 +1,7 @@
 import ContactAccordion from './contactBlock'
 
 export default function Footer() {
+  const date = new Date().getFullYear()
   return (
     <div className="footer">
       <div className="aside">
@@ -16,7 +17,7 @@ export default function Footer() {
             <a>T&amp;C</a>
             <a>Privacy Policy</a>
             <p>Brisbane (Meanjin), Australia</p>
-            <p>© STORYTALE STUDIO 2025</p>
+            <p>© STORYTALE STUDIO {date}</p>
           </div>
         </div>
       </div>
