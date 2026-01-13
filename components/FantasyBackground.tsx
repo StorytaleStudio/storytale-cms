@@ -465,7 +465,7 @@ export default function FantasyBackground({
     if (!ctx) return
 
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1
+      const dpr = window.devicePixelRatio || 2
       canvas.width = window.innerWidth * dpr
       canvas.height = window.innerHeight * dpr
       ctx.scale(dpr, dpr)
