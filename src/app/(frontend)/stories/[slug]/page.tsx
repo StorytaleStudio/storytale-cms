@@ -100,7 +100,7 @@ export async function generateMetadata({ params }: StoryPageProps) {
 
   return {
     title: story.data.title,
-    description: story.data.excerpt || story.data.description,
+    description: story.data.excerpt,
   }
 }
 
