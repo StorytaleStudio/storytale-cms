@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
-import configPromise from '@payload-config'
+import config from '@payload-config'
 import { MusingLayout } from 'components/layouts/MusingLayout'
 import { JournalLayout } from 'components/layouts/JournalLayout'
 
@@ -11,7 +11,7 @@ interface StoryPageProps {
 }
 
 async function getStory(slug: string) {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload({ config })
 
   const musings = await payload.find({
     collection: 'musings',
@@ -37,7 +37,7 @@ async function getStory(slug: string) {
 }
 
 async function getNavigationStories(currentId: string, collection: 'musings' | 'journal') {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload({ config })
 
   const stories = await payload.find({
     collection,
@@ -45,7 +45,7 @@ async function getNavigationStories(currentId: string, collection: 'musings' | '
     limit: 1000,
   })
 
-  const currentIndex = stories.docs.findIndex((doc: { id: string }) => doc.id === currentId)
+  const currentIndex = stories.docs.findIndex((doc) => doc.id === currentId)
 
   return {
     previous: currentIndex > 0 ? stories.docs[currentIndex - 1] : null,
@@ -58,7 +58,7 @@ async function getRelatedStories(
   collection: 'musings' | 'journal',
   tags?: string[],
 ) {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload({ config })
 
   let relatedStories: string | any[] = []
 
@@ -126,7 +126,7 @@ export default async function StoryPage({ params }: StoryPageProps) {
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload({ config })
 
   const [musings, journals] = await Promise.all([
     payload.find({ collection: 'musings', limit: 1000 }),
@@ -134,7 +134,7 @@ export async function generateStaticParams() {
   ])
 
   return [
-    ...musings.docs.map((doc: { slug: any }) => ({ slug: doc.slug })),
-    ...journals.docs.map((doc: { slug: any }) => ({ slug: doc.slug })),
+    ...musings.docs.map((doc) => ({ slug: doc.slug })),
+    ...journals.docs.map((doc) => ({ slug: doc.slug })),
   ]
 }
