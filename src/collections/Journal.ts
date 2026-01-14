@@ -13,6 +13,11 @@ export const Journal: CollectionConfig = {
       required: true,
     },
     {
+      name: 'description',
+      type: 'text',
+      required: true,
+    },
+    {
       name: 'excerpt',
       type: 'text',
       required: true,

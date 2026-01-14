@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
+import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { MusingLayout } from 'components/layouts/MusingLayout'
 import { JournalLayout } from 'components/layouts/JournalLayout'
@@ -11,7 +11,7 @@ interface StoryPageProps {
 }
 
 async function getStory(slug: string) {
-  const payload = await getPayloadHMR({ config: configPromise })
+  const payload = await getPayload({ config: configPromise })
 
   const musings = await payload.find({
     collection: 'musings',
@@ -36,8 +36,8 @@ async function getStory(slug: string) {
   return null
 }
 
-async function getNavigationStories(currentId: string, collection: 'musings' | 'journals') {
-  const payload = await getPayloadHMR({ config: configPromise })
+async function getNavigationStories(currentId: string, collection: 'musings' | 'journal') {
+  const payload = await getPayload({ config: configPromise })
 
   const stories = await payload.find({
     collection,
@@ -45,7 +45,7 @@ async function getNavigationStories(currentId: string, collection: 'musings' | '
     limit: 1000,
   })
 
-  const currentIndex = stories.docs.findIndex((doc) => doc.id === currentId)
+  const currentIndex = stories.docs.findIndex((doc: { id: string }) => doc.id === currentId)
 
   return {
     previous: currentIndex > 0 ? stories.docs[currentIndex - 1] : null,
@@ -58,9 +58,9 @@ async function getRelatedStories(
   collection: 'musings' | 'journal',
   tags?: string[],
 ) {
-  const payload = await getPayloadHMR({ config: configPromise })
+  const payload = await getPayload({ config: configPromise })
 
-  let relatedStories = []
+  let relatedStories: string | any[] = []
 
   // Try to find stories with matching tags first
   if (tags && tags.length > 0) {
@@ -112,10 +112,10 @@ export default async function StoryPage({ params }: StoryPageProps) {
     notFound()
   }
 
-  const collection = story.type === 'musing' ? 'musings' : 'journals'
+  const collection = story.type === 'musing' ? 'musings' : 'journal'
   const [navigation, related] = await Promise.all([
     getNavigationStories(story.data.id, collection),
-    getRelatedStories(story.data.id, collection, story.data.tags),
+    getRelatedStories(story.data.id, collection),
   ])
 
   if (story.type === 'musing') {
@@ -126,7 +126,7 @@ export default async function StoryPage({ params }: StoryPageProps) {
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayloadHMR({ config: configPromise })
+  const payload = await getPayload({ config: configPromise })
 
   const [musings, journals] = await Promise.all([
     payload.find({ collection: 'musings', limit: 1000 }),
@@ -134,7 +134,7 @@ export async function generateStaticParams() {
   ])
 
   return [
-    ...musings.docs.map((doc) => ({ slug: doc.slug })),
-    ...journals.docs.map((doc) => ({ slug: doc.slug })),
+    ...musings.docs.map((doc: { slug: any }) => ({ slug: doc.slug })),
+    ...journals.docs.map((doc: { slug: any }) => ({ slug: doc.slug })),
   ]
 }

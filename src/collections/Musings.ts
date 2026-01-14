@@ -18,6 +18,11 @@ export const Musings: CollectionConfig = {
       required: true,
     },
     {
+      name: 'description',
+      type: 'text',
+      required: true,
+    },
+    {
       name: 'content',
       type: 'richText',
       // Pass the Lexical editor here and override base settings as necessary
