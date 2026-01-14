@@ -8,7 +8,12 @@ export const Musings: CollectionConfig = {
   },
   fields: [
     {
-      name: 'musing-title',
+      name: 'title',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'excerpt',
       type: 'text',
       required: true,
     },

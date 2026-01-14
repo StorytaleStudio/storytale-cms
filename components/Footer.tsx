@@ -5,11 +5,13 @@ export default function Footer() {
   return (
     <div className="footer">
       <div className="aside">
-        <div>
+        <div className="footer-top">
           <p className="footer-text">
-            Prefer to chat more? <br />
-            Reach out so we can tell tales together.
+            We take stories and turn them into legends.
+            <br />
+            <span>Let&rsquo;s meet yours.</span>
           </p>
+          <a>Book in a 15min call.</a>
         </div>
         <div className="contact">
           <ContactAccordion />
@@ -21,7 +23,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <main></main>
     </div>
   )
 }

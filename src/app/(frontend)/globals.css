@@ -170,24 +170,40 @@ footer {
   min-height: 100svh;
   display: flex;
   padding: var(--core-padding);
+  width: 100%;
 }
 
 footer .aside{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 2rem;
   height: 100%;
   font-size: var(--type-small);
-  max-width: 18rem;
+  width: 100%;
+  /* max-width: 50%; */
 }
 
-
-.footer-text {
-  font-size: var(--type-h6);
-  font-weight: 600;
-  font-family: var(--font-secondary);
-  line-height: 1.6;
+.footer-top {
+  font-size: var(--type-h3);
+  font-weight: 300;
+  font-family: var(--font-primary);
+  line-height: 1.1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
+
+.footer-text span {
+  opacity: 0.6;
+}
+
+.footer-top a {
+  text-decoration: underline;
+  text-decoration-thickness: 0.125rem;
+  text-underline-offset: 0.5rem;
+}
+
 
 footer .aside .contact {
   display: flex;
@@ -211,6 +227,6 @@ footer .aside .below a {
 }
 
 h1, h2, h3, h4, h5 {
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   line-height: 1.1;
 }

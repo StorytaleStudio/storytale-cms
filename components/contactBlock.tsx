@@ -51,8 +51,7 @@ const ContactAccordion = () => {
       <style>{`
         .accordion-container {
           width: 100%;
-          max-width: 48rem;
-          margin: 0 auto;
+          max-width: 24rem;
         }
 
         .accordion-item {

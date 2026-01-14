@@ -241,7 +241,8 @@ export interface Offer {
  */
 export interface Journal {
   id: string;
-  'journal-title': string;
+  title: string;
+  excerpt: string;
   content?: {
     root: {
       type: string;
@@ -266,7 +267,8 @@ export interface Journal {
  */
 export interface Musing {
   id: string;
-  'musing-title': string;
+  title: string;
+  excerpt: string;
   content?: {
     root: {
       type: string;
@@ -477,7 +479,8 @@ export interface OffersSelect<T extends boolean = true> {
  * via the `definition` "journal_select".
  */
 export interface JournalSelect<T extends boolean = true> {
-  'journal-title'?: T;
+  title?: T;
+  excerpt?: T;
   content?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -487,7 +490,8 @@ export interface JournalSelect<T extends boolean = true> {
  * via the `definition` "musings_select".
  */
 export interface MusingsSelect<T extends boolean = true> {
-  'musing-title'?: T;
+  title?: T;
+  excerpt?: T;
   content?: T;
   updatedAt?: T;
   createdAt?: T;

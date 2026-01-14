@@ -8,7 +8,12 @@ export const Journal: CollectionConfig = {
   },
   fields: [
     {
-      name: 'journal-title',
+      name: 'title',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'excerpt',
       type: 'text',
       required: true,
     },

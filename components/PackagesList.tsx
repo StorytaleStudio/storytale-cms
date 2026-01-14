@@ -122,26 +122,28 @@ export default async function PackagesList({
                     zIndex: packages.length + index,
                   }}
                 >
-                  <div>
-                    <p className={styles.byline}>{pkg.byline}</p>
-                    <h3>{pkg['package-name']}</h3>
-                  </div>
-                  <p className={styles.elevatorPitch}>{pkg['elevator-pitch']}</p>
-                  <div className={styles.outcomes}>
-                    <ul>
-                      <li>{pkg['package-outcomes']['outcome-one']}</li>
-                      <li>{pkg['package-outcomes']['outcome-two']}</li>
-                      <li>{pkg['package-outcomes']['outcome-three']}</li>
-                    </ul>
-                  </div>
+                  <div className={styles.cardWrap}>
+                    <div>
+                      <p className={styles.byline}>{pkg.byline}</p>
+                      <h3>{pkg['package-name']}</h3>
+                    </div>
+                    <p className={styles.elevatorPitch}>{pkg['elevator-pitch']}</p>
+                    <div className={styles.outcomes}>
+                      <ul>
+                        <li>{pkg['package-outcomes']['outcome-one']}</li>
+                        <li>{pkg['package-outcomes']['outcome-two']}</li>
+                        <li>{pkg['package-outcomes']['outcome-three']}</li>
+                      </ul>
+                    </div>
 
-                  <Link
-                    href={'/packages' + pkg['package-link']}
-                    className={styles.ctaButton}
-                    aria-label={`Learn more about ${pkg['package-name']}`}
-                  >
-                    Learn More
-                  </Link>
+                    <Link
+                      href={'/packages' + pkg['package-link']}
+                      className={styles.ctaButton}
+                      aria-label={`Learn more about ${pkg['package-name']}`}
+                    >
+                      Learn More
+                    </Link>
+                  </div>
                 </article>
               ))}
             </div>

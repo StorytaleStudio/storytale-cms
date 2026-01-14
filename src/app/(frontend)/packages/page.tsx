@@ -1,6 +1,6 @@
 import PackagesList from 'components/PackagesList'
 
-export default function Pacakges() {
+export default function Packages() {
   return (
     <>
       <PackagesList />
