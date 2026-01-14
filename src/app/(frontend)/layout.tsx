@@ -102,7 +102,7 @@ export default function RootLayout({
         <footer data-section="hero">
           <Footer />
         </footer>
-        <ScrollBackground />
+        {/* <ScrollBackground /> */}
       </body>
     </html>
   )

@@ -63,6 +63,7 @@
 
 [data-background="light"] {
   color: var(--color-mono-secondary);
+  background: var(--color-mono-primary);
 }
 
 [data-section="hero"], [data-background="dark"] {
