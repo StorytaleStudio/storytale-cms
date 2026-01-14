@@ -65,7 +65,7 @@ const lightThemes: Theme[] = [
   },
   {
     name: 'Afternoon Light',
-    gradientColors: ['#f3c33dff', '#FFEF99', '#EC3537'],
+    gradientColors: ['#f3c33dff', '#EC3537', '#FFEF99'],
     noiseTint: '#1c1c1c',
     noiseIntensity: 0.8,
   },

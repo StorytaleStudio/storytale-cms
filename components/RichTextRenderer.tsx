@@ -1,6 +1,5 @@
-// components/RichTextRenderer.tsx
-import React from 'react'
 import Image from 'next/image'
+import React from 'react'
 
 interface RichTextRendererProps {
   content: any
@@ -34,8 +33,8 @@ export function RichTextRenderer({ content }: RichTextRendererProps) {
         return <p key={node.key}>{children}</p>
 
       case 'heading':
-        const HeadingTag = `h${node.tag}` as keyof JSX.IntrinsicElements
-        return <HeadingTag key={node.key}>{children}</HeadingTag>
+        const HeadingTag = `h${node.tag}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+        return React.createElement(HeadingTag, { key: node.key }, children)
 
       case 'quote':
         return <blockquote key={node.key}>{children}</blockquote>

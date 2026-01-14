@@ -1,4 +1,3 @@
-// components/layouts/MusingLayout.tsx
 import { RichTextRenderer } from 'components/RichTextRenderer'
 import { StoryNavigation } from 'components/StoryNavigation'
 import { RelatedStories } from 'components/RelatedStories'

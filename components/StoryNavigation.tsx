@@ -1,4 +1,3 @@
-// components/StoryNavigation.tsx
 import Link from 'next/link'
 
 interface StoryNavigationProps {

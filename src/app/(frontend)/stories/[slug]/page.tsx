@@ -1,17 +1,17 @@
 import { notFound } from 'next/navigation'
+import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { MusingLayout } from 'components/layouts/MusingLayout'
 import { JournalLayout } from 'components/layouts/JournalLayout'
-import { getPayload } from 'payload'
 
 interface StoryPageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 async function getStory(slug: string) {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayloadHMR({ config: configPromise })
 
   const musings = await payload.find({
     collection: 'musings',
@@ -37,7 +37,7 @@ async function getStory(slug: string) {
 }
 
 async function getNavigationStories(currentId: string, collection: string) {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayloadHMR({ config: configPromise })
 
   const stories = await payload.find({
     collection,
@@ -54,7 +54,7 @@ async function getNavigationStories(currentId: string, collection: string) {
 }
 
 async function getRelatedStories(currentId: string, collection: string, tags?: string[]) {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayloadHMR({ config: configPromise })
 
   let relatedStories = []
 
@@ -87,7 +87,8 @@ async function getRelatedStories(currentId: string, collection: string, tags?: s
 }
 
 export async function generateMetadata({ params }: StoryPageProps) {
-  const story = await getStory(params.slug)
+  const { slug } = await params
+  const story = await getStory(slug)
 
   if (!story) {
     return { title: 'Story Not Found' }
@@ -100,7 +101,8 @@ export async function generateMetadata({ params }: StoryPageProps) {
 }
 
 export default async function StoryPage({ params }: StoryPageProps) {
-  const story = await getStory(params.slug)
+  const { slug } = await params
+  const story = await getStory(slug)
 
   if (!story) {
     notFound()
@@ -120,11 +122,11 @@ export default async function StoryPage({ params }: StoryPageProps) {
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayloadHMR({ config: configPromise })
 
   const [musings, journals] = await Promise.all([
     payload.find({ collection: 'musings', limit: 1000 }),
-    payload.find({ collection: 'journal', limit: 1000 }),
+    payload.find({ collection: 'journals', limit: 1000 }),
   ])
 
   return [
