@@ -31,7 +31,7 @@ const themes: Theme[] = [
   },
   {
     name: 'Afternoon',
-    gradientColors: ['#f3c33dff', '#EC3537', '#FFEF99'],
+    gradientColors: ['#f3c33dff', '#FFEF99', '#eb2011'],
     noiseTint: '#333333ff',
     noiseIntensity: 0.4,
   },
@@ -65,7 +65,7 @@ const lightThemes: Theme[] = [
   },
   {
     name: 'Afternoon Light',
-    gradientColors: ['#f3c33dff', '#EC3537', '#FFEF99'],
+    gradientColors: ['#f3c33dff', '#FFEF99', '#EC3537'],
     noiseTint: '#1c1c1c',
     noiseIntensity: 0.8,
   },
@@ -421,8 +421,8 @@ export default function FantasyBackground({
         const div = gradientDivsRef.current[idx]
         if (div && idx < colors.length - 1) {
           const isFirst = idx === 0
-          const xVar = isFirst ? 'var(--g1-offset, 0)' : 'calc(50% + var(--g2-offset, 0))'
-          const yVar = isFirst ? 'var(--g1-offset, 0)' : '100%'
+          const xVar = isFirst ? 'var(--g1-offset, 0)' : 'calc(25% + var(--g2-offset, 0))'
+          const yVar = isFirst ? 'var(--g1-offset, 0)' : '75%'
           div.style.background = `radial-gradient(circle at ${xVar} ${yVar}, ${colors[idx]} 0%, transparent calc(${idx} * 75%))`
         } else if (div && idx === colors.length - 1) {
           div.style.background = `linear-gradient(to right, ${colors[idx]}, transparent)`
