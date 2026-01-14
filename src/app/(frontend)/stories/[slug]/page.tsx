@@ -36,7 +36,7 @@ async function getStory(slug: string) {
   return null
 }
 
-async function getNavigationStories(currentId: string, collection: string) {
+async function getNavigationStories(currentId: string, collection: 'musings' | 'journals') {
   const payload = await getPayloadHMR({ config: configPromise })
 
   const stories = await payload.find({
@@ -53,7 +53,11 @@ async function getNavigationStories(currentId: string, collection: string) {
   }
 }
 
-async function getRelatedStories(currentId: string, collection: string, tags?: string[]) {
+async function getRelatedStories(
+  currentId: string,
+  collection: 'musings' | 'journal',
+  tags?: string[],
+) {
   const payload = await getPayloadHMR({ config: configPromise })
 
   let relatedStories = []
@@ -126,7 +130,7 @@ export async function generateStaticParams() {
 
   const [musings, journals] = await Promise.all([
     payload.find({ collection: 'musings', limit: 1000 }),
-    payload.find({ collection: 'journals', limit: 1000 }),
+    payload.find({ collection: 'journal', limit: 1000 }),
   ])
 
   return [
