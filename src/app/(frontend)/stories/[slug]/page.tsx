@@ -105,24 +105,29 @@ export async function generateMetadata({ params }: StoryPageProps) {
 }
 
 export default async function StoryPage({ params }: StoryPageProps) {
-  const { slug } = await params
-  const story = await getStory(slug)
+  try {
+    const { slug } = await params
+    const story = await getStory(slug)
 
-  if (!story) {
+    if (!story) {
+      notFound()
+    }
+
+    const collection = story.type === 'musing' ? 'musings' : 'journal'
+    const [navigation, related] = await Promise.all([
+      getNavigationStories(story.data.id, collection),
+      getRelatedStories(story.data.id, collection),
+    ])
+
+    if (story.type === 'musing') {
+      return <MusingLayout musing={story.data} navigation={navigation} related={related} />
+    }
+
+    return <JournalLayout journal={story.data} navigation={navigation} related={related} />
+  } catch (error) {
+    console.error('Error rendering story page:', error)
     notFound()
   }
-
-  const collection = story.type === 'musing' ? 'musings' : 'journal'
-  const [navigation, related] = await Promise.all([
-    getNavigationStories(story.data.id, collection),
-    getRelatedStories(story.data.id, collection),
-  ])
-
-  if (story.type === 'musing') {
-    return <MusingLayout musing={story.data} navigation={navigation} related={related} />
-  }
-
-  return <JournalLayout journal={story.data} navigation={navigation} related={related} />
 }
 
 export async function generateStaticParams() {
