@@ -1,7 +1,7 @@
 // components/layouts/JournalLayout.tsx
-import { RichTextRenderer } from '@/components/RichTextRenderer'
-import { StoryNavigation } from '@/components/StoryNavigation'
-import { RelatedStories } from '@/components/RelatedStories'
+import { RichTextRenderer } from 'components/RichTextRenderer'
+import { StoryNavigation } from 'components/StoryNavigation'
+import { RelatedStories } from 'components/RelatedStories'
 
 export function JournalLayout({
   journal,
