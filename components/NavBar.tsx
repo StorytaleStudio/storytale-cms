@@ -7,7 +7,7 @@ import { useElementSectionColors } from './ScrollColorContext'
 
 const pages = [
   { name: 'Home', href: '/' },
-  { name: 'About', href: '/about' },
+  { name: 'Studio', href: '/about' },
   { name: 'Work', href: '/work' },
   { name: 'Services', href: '/services' },
   { name: 'Stories', href: '/stories' },
