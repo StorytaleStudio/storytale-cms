@@ -2,6 +2,7 @@ import styles from './page.module.css'
 import ScrollFade from 'components/TextScrollFade'
 import PackagesList from 'components/PackagesList'
 import VideoSection from 'components/videoSection'
+import TimeBasedGradient from 'components/betterBackground'
 
 export default function Home() {
   return (
@@ -11,8 +12,9 @@ export default function Home() {
         <aside className={styles.aside}>
           <ScrollFade>
             <h1>
-              The Branding, Strategy and Digital Design creative studio for those who want to
-              capture hearts not clicks.
+              <span className={styles.textHighlight}>We partner with ambitious founders</span>
+              <br />
+              with the insatiable desire to build something that matters.
             </h1>
           </ScrollFade>
 
@@ -27,6 +29,7 @@ export default function Home() {
           </div>
         </aside>
         <main className={styles.main}></main>
+        <TimeBasedGradient />
       </section>
       <VideoSection />
       <PackagesList />

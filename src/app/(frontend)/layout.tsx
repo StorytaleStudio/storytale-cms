@@ -6,6 +6,7 @@ import LogoLink from 'components/Logo'
 import localFont from 'next/font/local'
 import Footer from 'components/Footer'
 import ScrollBackground from 'components/backgroundSwitcher'
+import TimeBasedGradient from 'components/betterBackground'
 
 const founder = localFont({
   // src: '../public/fonts/founders-grotesk-bold.woff2',
@@ -103,6 +104,7 @@ export default function RootLayout({
           <Footer />
         </footer>
         {/* <ScrollBackground /> */}
+        {/* <TimeBasedGradient /> */}
       </body>
     </html>
   )
